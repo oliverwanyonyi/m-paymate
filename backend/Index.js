@@ -6,10 +6,11 @@ const db = require("./models");
 const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const expenditureRoutes = require("./routes/expenditureRoutes");
+const billRoutes = require("./routes/billRoutes");
 
 app.use(
   cors({
-    origin: ["http://localhost:5174"],
+    origin: ["http://localhost:5173"],
     credentials: true,
   })
 );
@@ -18,6 +19,8 @@ app.use(express.json());
 
 app.use("/api", authRoutes);
 app.use("/api/expenditure", expenditureRoutes);
+app.use("/api/bills", billRoutes);
+
 
 // Middleware to handle not found routes (404)
 app.use((req, res, next) => {

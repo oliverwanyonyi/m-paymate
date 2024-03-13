@@ -26,6 +26,14 @@ async function getExpenditures(req,res,next) {
 
         const {page = 1, perPage =7} = req.query
 
+        if(page === 'all'){
+            const expenditures =await Expenditure.findAll({where:{
+                user_id:req.user.id
+            },})
+
+            return res.json(expenditures)
+        }
+
         const {rows:expenditures, count} =await Expenditure.findAndCountAll({where:{
             user_id:req.user.id
         },

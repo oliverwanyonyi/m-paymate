@@ -3,17 +3,17 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await queryInterface.createTable('expenditures', {
+  
+    await queryInterface.createTable('bills',{
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      name: {
+      expense: {
         type: Sequelize.STRING,
         allowNull: false,
-        unique:true
 
       },
       amount: {
@@ -28,6 +28,23 @@ module.exports = {
           key: 'id'
         }
       },
+      status:{
+        type: Sequelize.ENUM(
+          "pending",
+          "partially-paid",
+          "paid",
+        ),
+        
+        defaultValue:'pending'
+      }, 
+      balance: {
+        type:Sequelize.DOUBLE(10,2),
+
+      },
+      due_date: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -36,10 +53,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.dropTable('expenditures');
+    /**
+     * Add reverting commands here.
+     *
+     * Example:
+     * await queryInterface.dropTable('users');
+     */
   }
 };

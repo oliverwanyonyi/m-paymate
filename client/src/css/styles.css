@@ -82,6 +82,9 @@ ul{
     
 }
 
+
+
+
 .nav-link-item .link-text{
     display: flex;
     align-items: center;
@@ -89,15 +92,23 @@ ul{
     cursor: pointer;
     background: #f0f0f0;
     color: #202020;
-    padding: 8px 11px;
-    border-radius: 5px;
+    padding: 12px 11px;
+    font-size: 15px;
+    border-radius: 10px;
+    padding: 13px 20px;
+    
 }
 .nav-link-item .text{
     color: #202020;
 
 }
-.nav-link-item .text:hover{
-    color: #10e30c;
+.nav-sub-items .link-text{
+    
+    display: block;
+    border-radius: 0;
+}
+.nav-sub-items  .link-text:hover{
+    color: #10e30c!important;
     background: #ffffff;
     display: block;
 }
@@ -107,8 +118,8 @@ ul{
     top: 50px;
     width: 200px;
     left: -120px;
-    background-color: #f0f0f0;
-    padding: 20px;
+    background-color: #f7f0f7;
+    padding: 10px 0;
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -159,4 +170,27 @@ font-weight: 900;
     justify-content: center;
     width: 100%;
     padding: 20px ;
+}
+
+
+.message-box{
+    color: #404040;
+    text-align: center;
+    padding: 30px 0;
+    font-size: 15px;
+}
+
+.input-row{
+    margin-bottom: 28px;
+}
+
+
+.table-head{background: #f0f0f0;}
+
+.striped{
+    background: #ececec;
+}
+
+.table-container{
+    padding: 20px;
 }

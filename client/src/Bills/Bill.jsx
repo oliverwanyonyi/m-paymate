@@ -1,22 +1,15 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Box, Pagination, Stack } from '@mui/material';
-import { useContext, useEffect, useState } from 'react';
-import { MdAdd } from 'react-icons/md';
-import { AuthContext } from '../store/AuthProvider';
-import { AppContext } from '../store/AppProvider';
-import { axiosInstance } from '../axios/axios';
-import PaymentsIcon from '@mui/icons-material/Payments';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-const ExpenditureList = () => {
-const {handleNavigate} = useContext(AppContext)
+import React, { useContext, useEffect, useState } from 'react'
+import { AppContext } from '../store/AppProvider'
+import { Box, Button, Pagination, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { MdAdd } from 'react-icons/md'
+import { axiosInstance } from '../axios/axios'
+
+const Bill = () => {
+  const {handleNavigate} = useContext(AppContext)
 const [currentPage,setCurrentPage] = useState(1)
-const [expenditures,setExpenditures] = useState()
+const [data,setData] = useState([])
     const [pageCount,setPageCount] = useState(0)
-    const data = [
-        { id: 1, name: 'Electricity', amount: 100 },
-        { id: 2, name: 'Rent', amount: 800 },
-        { id: 3, name: 'Water', amount: 50 },
-        { id: 4, name: 'Netflix', amount: 15 }
-      ];
+ 
 
       function onNavigate(path){
         handleNavigate(path)
@@ -29,10 +22,10 @@ const [expenditures,setExpenditures] = useState()
 
 
      async function getExpenditures(){
-   const {data} =await axiosInstance.get(`/expenditure/all?page=${currentPage}`)
+   const {data} =await axiosInstance.get(`/bills/all?page=${currentPage}`)
    console.log(data);
    setPageCount(data.pageCount)
-   setExpenditures(data.expenditures)
+   setData(data.bills)
       }
 
 
@@ -45,7 +38,7 @@ getExpenditures()
 
   return (
     <div className="route">
-<h3 className="page-title">Expenditures</h3>
+<h3 className="page-title">bills</h3>
 <div className="content">
     <TableContainer className='table-container' component={Paper}>
 
@@ -56,9 +49,9 @@ getExpenditures()
         startIcon={<MdAdd />} // Add the Add icon as start icon
         sx={{ marginBottom: 2 }} // Add some margin at the bottom for spacing
     
-    onClick={()=>onNavigate('/expenditure/add')}
+    onClick={()=>onNavigate('/bills/add')}
     >
-        Add Expenditure
+        Add Bill
       </Button>
 
       </Box>
@@ -66,7 +59,12 @@ getExpenditures()
       <TableHead className='table-head'>
         <TableRow>
         <TableCell>#</TableCell>
-          <TableCell>Name</TableCell>
+          <TableCell>Expense</TableCell>
+          <TableCell>Amount</TableCell>
+          <TableCell>Due Date</TableCell>
+          <TableCell>Status</TableCell>
+          <TableCell>Balance</TableCell>
+
           <TableCell align="right">Amount</TableCell>
           <TableCell>Action</TableCell>
         </TableRow>
@@ -116,4 +114,4 @@ getExpenditures()
   )
 }
 
-export default ExpenditureList
+export default Bill

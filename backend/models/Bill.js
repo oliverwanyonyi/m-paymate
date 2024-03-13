@@ -1,18 +1,18 @@
 module.exports = (sequelize,Sequelize) =>{
-    const expenditure = sequelize.define('expenditures',{
+    const bill  = sequelize.define('bills',{
         id: {
             allowNull: false,
             autoIncrement: true,
             primaryKey: true,
             type: Sequelize.INTEGER
           },
-          name: {
+          expense: {
             type: Sequelize.STRING,
             allowNull: false,
-            unique:true
+          
           },
           amount: {
-            type: Sequelize.DECIMAL(10, 2), 
+            type: Sequelize.DECIMAL(10, 2), // Assuming decimal for amount, adjust as necessary
             allowNull: false
           },
           user_id: {
@@ -22,6 +22,23 @@ module.exports = (sequelize,Sequelize) =>{
               model: 'users',
               key: 'id'
             }
+          },
+          status:{
+            type: Sequelize.ENUM(
+              "pending",
+              "partially-paid",
+              "paid",
+            ),
+            
+            defaultValue:'pending'
+          }, 
+          balance: {
+            type:Sequelize.DOUBLE(10,2),
+    
+          },
+          due_date: {
+            allowNull: false,
+            type: Sequelize.DATE
           },
           createdAt: {
             allowNull: false,
@@ -33,5 +50,5 @@ module.exports = (sequelize,Sequelize) =>{
           }
     })
 
-    return expenditure
+    return bill
 }

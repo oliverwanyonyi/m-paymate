@@ -50,9 +50,8 @@ const Login = ({ onLogin,errors }) => {
   return (
     <Container>
 
-      <Snackbar>
-     
-      </Snackbar>
+    
+    
       <Typography variant="h4" component="h1">
         Login 
       </Typography>
