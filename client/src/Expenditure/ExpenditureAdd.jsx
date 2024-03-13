@@ -6,13 +6,15 @@ import {
   Snackbar,
   CircularProgress,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { axiosInstance } from "../axios/axios";
 import { AppContext } from "../store/AppProvider";
 import { useSnackbar } from "notistack";
+import { useParams } from "react-router-dom";
 
 const ExpenditureAdd = () => {
   const [formData, setFormData] = useState({ name: "", amount: "" });
+  const {expeId} = useParams()
   const { snackbarOpen, openSnackbar, closeSnackbar, handleNavigate } =
     useContext(AppContext);
   const {enqueueSnackbar} = useSnackbar();
@@ -25,10 +27,22 @@ const ExpenditureAdd = () => {
   async function submitHandler() {
     try {
       setLoading(true);
+      let message;
+      if(expeId){
 
-      await axiosInstance.post("/expenditure/create", formData);
+        await axiosInstance.put(`/expenditure/${expeId}/update`, formData);
+        message = "Update Successful"
+       
+        
+      }else{
+      
 
-      enqueueSnackbar("Expenditure added", {
+       await axiosInstance.post("/expenditure/create", formData);
+
+       message = "Expenditure added"
+      }
+
+      enqueueSnackbar(message, {
         variant: "success",
         anchorOrigin: {
           vertical: "top",
@@ -54,6 +68,24 @@ const ExpenditureAdd = () => {
       setLoading(false);
     }
   }
+
+async function getExpenditure(expenditure){
+  try {
+  const {data} = await axiosInstance.get(`/expenditure/${expenditure}`)
+
+  setFormData({...formData, name:data?.name, amount:data?.amount})
+    
+  } catch (error) {   
+  }
+
+}
+
+
+  useEffect(()=>{
+if(expeId){
+    getExpenditure(expeId)
+}
+  },[])
   return (
     <div className="route">
       <Snackbar
@@ -67,7 +99,7 @@ const ExpenditureAdd = () => {
       <div className="content">
         <div className="crud-form">
           <div className="form-header">
-            <h2 className="form-header">Add Expenditure</h2>
+            <h2 className="form-header">{!expeId? "Add Expenditure":"Update Expenditure"}</h2>
           </div>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
@@ -75,6 +107,7 @@ const ExpenditureAdd = () => {
                 label="Expenditure Name"
                 variant="outlined"
                 fullWidth
+                value={formData?.name}
                 onChange={(e) => changeHandler("name", e.target.value)}
                 error={errors?.name}
                 helperText={errors?.name}
@@ -85,6 +118,7 @@ const ExpenditureAdd = () => {
                 label="Amount"
                 variant="outlined"
                 fullWidth
+                value={formData?.amount}
                 error={errors?.amount}
                 helperText={errors?.amount}
                 onChange={(e) => changeHandler("amount", e.target.value)}
@@ -98,7 +132,7 @@ const ExpenditureAdd = () => {
                 onClick={submitHandler}
                 color="primary"
               >
-                {loading ? <CircularProgress /> : "Submit"}
+                {loading ?  <CircularProgress /> : expeId?"Update": "Submit"}
               </Button>
             </Grid>
           </Grid>

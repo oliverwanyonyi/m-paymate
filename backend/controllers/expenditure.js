@@ -51,4 +51,51 @@ async function getExpenditures(req,res,next) {
 }
 
 
-module.exports = {expenditureAdd,getExpenditures}
+
+async function deleteExpenditure(req,res,next) {
+
+    try {
+        await Expenditure.destroy({where:{
+            id:req.params.expeId
+        }})
+
+        res.send('Expenditure removed')
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+
+async function updateExpenditure(req,res,next){
+      try {
+
+        const errors = validationResult(req)
+        if(!errors.isEmpty()){
+           return res.status(422).json(errors)
+        }
+        await Expenditure.update({...req.body},{where:{id:req.params.expeId}})
+
+        res.send('expense updated')
+        
+      } catch (error) {
+        next(error)
+      }
+}
+
+const getExpenditure = async (req,res,next) =>{
+    try {
+
+        const expenditure = await Expenditure.findOne({where:{
+            user_id:req.user.id,
+            id:req.params.expeId
+        }})
+        
+        res.json(expenditure)
+    } catch (error) {
+        next(error)
+    }
+}
+
+
+module.exports = {expenditureAdd,getExpenditures, updateExpenditure,deleteExpenditure,getExpenditure}

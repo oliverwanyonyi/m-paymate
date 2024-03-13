@@ -120,6 +120,16 @@ function App() {
         }
       />
 
+      <Route 
+      path="/expenditure/:expeId/edit"
+
+      element={
+        <Layout>
+          <ExpenditureAdd />
+        </Layout>
+      }
+      />
+
       <Route
         path="/expenditure/list"
         element={

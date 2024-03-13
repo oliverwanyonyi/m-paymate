@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../store/AppProvider'
-import { Box, Button, Pagination, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
+import { Box, Button, IconButton, Pagination, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material'
 import { MdAdd } from 'react-icons/md'
 import { axiosInstance } from '../axios/axios'
-
+import PaymentIcon from "@mui/icons-material/Payments";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import {format} from 'date-fns'
 const Bill = () => {
   const {handleNavigate} = useContext(AppContext)
 const [currentPage,setCurrentPage] = useState(1)
@@ -21,9 +23,21 @@ const [data,setData] = useState([])
       }
 
 
-     async function getExpenditures(){
+      async function handleDelete(itemeId){
+        try {
+          await axiosInstance.delete(`/bills/${itemeId}/delete`)
+          setData(prev=>{
+            return prev.filter(item=>item.id !== itemeId)
+          })
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+     async function getData(){
    const {data} =await axiosInstance.get(`/bills/all?page=${currentPage}`)
-   console.log(data);
+   
+   
    setPageCount(data.pageCount)
    setData(data.bills)
       }
@@ -31,14 +45,14 @@ const [data,setData] = useState([])
 
 
 useEffect(()=>{
-getExpenditures()
+getData()
 }, [currentPage])
 
 
 
   return (
     <div className="route">
-<h3 className="page-title">bills</h3>
+<h3 className="page-title">Bills</h3>
 <div className="content">
     <TableContainer className='table-container' component={Paper}>
 
@@ -64,30 +78,48 @@ getExpenditures()
           <TableCell>Due Date</TableCell>
           <TableCell>Status</TableCell>
           <TableCell>Balance</TableCell>
-
-          <TableCell align="right">Amount</TableCell>
           <TableCell>Action</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
-        {expenditures?.map((row,idx) => (
+        {data?.map((row,idx) => (
           <TableRow key={row.id} className={idx % 2 !== 0 ? 'striped' : ''}>
             <TableCell component="th" scope="row">
               {idx+1}
             </TableCell>
             <TableCell component="th" scope="row">
-              {row.name}
+              {row.expense}
             </TableCell>
-            <TableCell align="right">{row.amount}</TableCell>
+            <TableCell align="right">Ksh{row.amount}</TableCell>
+
+            <TableCell align="right">{format(row.due_date, 'yyyy/MM/dd', { timeZone: 'Africa/Nairobi' })}</TableCell>
+
+
+            <TableCell align="right">{row.status}</TableCell>
+
+            <TableCell align="right">Ksh {row.amount - (row.balance || 0)}</TableCell>
+
+
             <TableCell>
-                <div className="btn-row">
-                <Button variant="contained" sx={{bgcolor:'#10e30c',' &:hover':{bgcolor:'#0eba0b'}}} color="primary" size="small" onClick={() => handleAction(row)}>
-                Edit
-              </Button>
-              <Button variant="contained" color="primary" sx={{bgcolor:'#eb130c',' &:hover':{bgcolor:'#d10f08'}}} size="small" onClick={() => handleAction(row)}>
-              Delete
-              </Button>
-                </div>
+            <div className="btn-row">
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDelete(row.id)}
+                      >
+                        <DeleteOutlineIcon />
+                      </IconButton>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<PaymentIcon />}
+                      >
+                        Pay
+                      </Button>
+
+
+                     
+                    </div>
              
             </TableCell>
           </TableRow>
@@ -95,7 +127,7 @@ getExpenditures()
       </TableBody>
      
       </Table>
-      {!expenditures?.length && <div className='message-box'>No Items Found</div>}
+      {!data?.length && <div className='message-box'>No Items Found</div>}
 
       <div className="pagination-section">
       <Stack spacing={2}>
