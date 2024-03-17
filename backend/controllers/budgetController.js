@@ -138,3 +138,72 @@ exports.getCategoryDetails = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.updateBudgetCategory = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json(errors);
+    }
+    await BudgetCategory.update(
+      { ...req.body },
+      {
+        where: {
+          id: req.params.cateId,
+        },
+      }
+    );
+
+    res.send("budget ctegory Updated");
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteBudgetCategory = async (req, res, next) => {
+  try {
+    const category = await BudgetCategory.findByPk(req.params.cateId);
+
+    await category.destroy();
+
+    res.send("category deletd");
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteBudget = async (req, res, next) => {
+  try {
+    const budget = await Budget.findOne({
+      where: {
+        id: req.params.budgetId,
+        user_id: req.user.id,
+      },
+    });
+
+    await budget.destroy();
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.addBudgetCategory = async (req, rex, next) => {
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).json(errors);
+    }
+    const budget = await Budget.findByPk(req.params.budgetId);
+    if (!budget) {
+      res.status(404).json("budget not found");
+    }
+
+    await BudgetCategory.create(req.body);
+
+    res.send("budget catgory added");
+  } catch (error) {
+    next(error);
+  }
+};

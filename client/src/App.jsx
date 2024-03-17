@@ -19,6 +19,7 @@ import OCRComponent from "./TessaractTest";
 import NewBudget from "./Budget/NewBudget";
 import BudgetList from "./Budget/BudgetList";
 import EditBudgetCategory from "./Budget/EditBudgetCategory";
+import AddBudgetCategory from "./Budget/AddBudgetCategory";
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { setIsAuth, isAuth, setAuthUser, authUser } = useContext(AuthContext);
@@ -212,6 +213,8 @@ function App() {
           )
         }
       />
+
+      <Route path="/budget/:budgetId/category/add"  element={<Layout><AddBudgetCategory/> </Layout>} />
 
       <Route
         path="/profile"

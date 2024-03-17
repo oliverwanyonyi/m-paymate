@@ -1,31 +1,33 @@
-import { Button, CircularProgress, Grid, TextField } from '@mui/material'
-import React, { useContext, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { Button, CircularProgress, Grid, MenuItem, TextField } from '@mui/material'
+import React, { useContext, useState } from 'react'
 import { axiosInstance } from '../axios/axios'
-import { useSnackbar } from 'notistack'
 import { AppContext } from '../store/AppProvider'
+import { useSnackbar } from 'notistack'
+import { useParams } from 'react-router-dom'
 
-const EditBudgetCategory = () => {
+const AddBudgetCategory = () => {
     const [budgetCategory,setBudgetCategory] = useState()
-    const [formData,setFormData] = useState({amount:0})
-    const [errors,setErrors] = useState()
+    const [formData,setFormData] = useState({categpry:'', amount:0})
+    const [error,setError] = useState()
     const [loading,setLoading] = useState(false)
     const {handleNavigate} = useContext(AppContext)
   const {enqueueSnackbar} = useSnackbar();
 
-  const {cateId} = useParams()
+  const {budgetId} = useParams()
 
-    async function getBudgetCategory(category){
-
-
-
-        const {data} = await axiosInstance.get(`/budget/category/${category}`)
-       
-
-        setBudgetCategory(data)
-        setFormData({...formData, amount:data?.amount})
-
-    }
+  
+  const budgetCategories = [
+    'Housing (Rent/Mortgage)',
+    'Utilities (Electricity, Water, Gas)',
+    'Transportation (Car Payment, Public Transportation)',
+    'Food (Groceries, Dining Out)',
+    'Insurance (Health, Life, Auto)',
+    'Debt Payments (Credit Cards, Loans)',
+    'Entertainment (Movies, Streaming Services)',
+    'Healthcare (Doctor Visits, Medications)',
+    'Savings (Emergency Fund, Retirement)',
+    'Miscellaneous (Clothing, Gifts, Hobbies)'
+];
 
 
    async function submitHandler(event){
@@ -34,7 +36,7 @@ const EditBudgetCategory = () => {
         try {
             setLoading(true)
             
-            await axiosInstance.put(`/budget/category/${cateId}/update`, formData)
+            await axiosInstance.post(`/budget/${budgetId}/category/add`, formData)
 
             enqueueSnackbar("Budget Category updated", {
                 variant: "success",
@@ -56,7 +58,7 @@ const EditBudgetCategory = () => {
                   errorObject[error.path] = error.msg;
                 });
         
-                setErrors(errorObject);
+                setError(errorObject);
                 window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
                 return;
               }
@@ -67,11 +69,7 @@ const EditBudgetCategory = () => {
     }
 
 
-    useEffect(()=>{
-        if(cateId){
-            getBudgetCategory(cateId)
-        }
-    },[cateId])
+  
   return (
     <div className="route">
      
@@ -83,14 +81,25 @@ const EditBudgetCategory = () => {
           </div>
           <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
-              <TextField
-                
-               
-                variant="outlined"
-                fullWidth
-                value={budgetCategory?.name}
-                disabled
-               />
+          <TextField
+                  select
+                  label="Select budget Category"
+                  variant="outlined"
+                  fullWidth
+                  value={formData.name}
+                  onChange={(e) => handleChange(index, "name", e.target.value)}
+                  error={error?.name}
+                  helperText={
+                    error?.name
+                  }
+                  style={{ flex: 1 }}
+                >
+                 {budgetCategories.map(cate=>(
+                  <MenuItem value={cate} key={cate}>{cate}</MenuItem>
+
+                 ))}
+                  
+                </TextField>
             </Grid>
           
             <Grid item xs={12} sm={6}>
@@ -99,8 +108,8 @@ const EditBudgetCategory = () => {
                 variant="outlined"
                 fullWidth
                 value={formData?.amount}
-                error={errors?.amount}
-                helperText={errors?.amount}
+                error={error?.amount}
+                helperText={error?.amount}
                 onChange={(e) => setFormData({...formData, amount:e.target.value})}
               />
             </Grid>
@@ -112,7 +121,7 @@ const EditBudgetCategory = () => {
                 onClick={submitHandler}
                 color="primary"
               >
-                {loading ?  <CircularProgress /> :"Update"}
+                {loading ?  <CircularProgresss /> :"Add Category"}
               </Button>
             </Grid>
           </Grid>
@@ -122,4 +131,4 @@ const EditBudgetCategory = () => {
   )
 }
 
-export default EditBudgetCategory
+export default AddBudgetCategory
