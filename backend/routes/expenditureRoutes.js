@@ -14,6 +14,8 @@ router.route("/create").post(
 
   body("name").trim().notEmpty().withMessage("Expenditure name is required"),
   body("amount").isFloat({ min: 1 }).withMessage("Amount must be at least 1"),
+  body("category").isInt().withMessage("Budget Category Is required"),
+
   expenditureAdd
 );
 

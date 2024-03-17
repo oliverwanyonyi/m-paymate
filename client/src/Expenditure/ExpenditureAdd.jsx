@@ -5,6 +5,7 @@ import {
   Typography,
   Snackbar,
   CircularProgress,
+  MenuItem,
 } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
 import { axiosInstance } from "../axios/axios";
@@ -13,15 +14,29 @@ import { useSnackbar } from "notistack";
 import { useParams } from "react-router-dom";
 
 const ExpenditureAdd = () => {
-  const [formData, setFormData] = useState({ name: "", amount: "" });
+  const [formData, setFormData] = useState({ name: "", amount: "",category:'' });
   const {expeId} = useParams()
   const { snackbarOpen, openSnackbar, closeSnackbar, handleNavigate } =
     useContext(AppContext);
+
   const {enqueueSnackbar} = useSnackbar();
+  const [budgetCategories , setBudgetCategories] = useState([])
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState();
   function changeHandler(field, value) {
     setFormData({ ...formData, [field]: value });
+  }
+
+
+  const fetchBudgetCategories  = async () =>{
+    try {
+      const response = await axiosInstance.get('/budget/categories')
+      setBudgetCategories(response.data)
+      
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async function submitHandler() {
@@ -85,6 +100,8 @@ async function getExpenditure(expenditure){
 if(expeId){
     getExpenditure(expeId)
 }
+
+fetchBudgetCategories()
   },[])
   return (
     <div className="route">
@@ -102,6 +119,22 @@ if(expeId){
             <h2 className="form-header">{!expeId? "Add Expenditure":"Update Expenditure"}</h2>
           </div>
           <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+              <TextField
+                label="Budget Category"
+                select
+                variant="outlined"
+                fullWidth
+                value={formData?.category}
+                onChange={(e) => changeHandler("category", e.target.value)}
+                error={errors?.category}
+                helperText={errors?.category}
+          >
+
+{budgetCategories.map(cate=>(<MenuItem value={cate.id}>{cate.name}</MenuItem>))}
+            
+            </TextField>
+            </Grid>
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Expenditure Name"

@@ -4,35 +4,34 @@ import { Link } from "react-router-dom";
 import { AuthContext } from "../store/AuthProvider";
 
 const UserNav = () => {
-    const [isSubnavOpen, setIsSubnavOpen] = useState(false);
-    const subnavRef = useRef(null);
-    const {logout,authUser} = useContext(AuthContext)
-    const toggleSubnav = () => {
-        setIsSubnavOpen(!isSubnavOpen);
-      };
+  const [isSubnavOpen, setIsSubnavOpen] = useState(false);
+  const subnavRef = useRef(null);
+  const { logout, authUser } = useContext(AuthContext);
+  const toggleSubnav = () => {
+    setIsSubnavOpen(!isSubnavOpen);
+  };
 
-      const handleLogout = ()=>{
-        logout()
-      }
+  const handleLogout = () => {
+    logout();
+  };
 
-    const handleClickOutside = (event) => {
-       
-        if (subnavRef.current && !subnavRef.current.contains(event.target)) {
-        console.log(event);
+  const handleClickOutside = (event) => {
+    if (
+      subnavRef.current &&
+      !subnavRef.current.contains(event.target) &&
+      !event.target.closest(".nav-link-item")
+    ) {
+      setIsSubnavOpen(false);
+    }
+  };
 
-          setIsSubnavOpen(false);
-        }
-      };
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-      useEffect(() => {
-        
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            
-          document.removeEventListener('mousedown', handleClickOutside);
-        };
-      }, []);
-    
   return (
     <div className="user-nav">
       <div>
@@ -40,8 +39,10 @@ const UserNav = () => {
       </div>
 
       <ul className="nav-links">
-        <li className={`nav-link-item ${isSubnavOpen && 'nav-link-active'}`} onClick={toggleSubnav}>
-          
+        <li
+          className={`nav-link-item ${isSubnavOpen ? "nav-link-active" : ""}`}
+          onClick={toggleSubnav}
+        >
           <div className="link-text">
             <div className="text">
               <FaCircleUser className="icon" /> {authUser?.name}
@@ -50,18 +51,16 @@ const UserNav = () => {
           </div>
 
           <div className="nav-sub-items" ref={subnavRef}>
-          <div className="link-text">
-            <Link className="text" to='/profile'>
-              Profile
-            </Link>
-          
-          </div>
-          <div className="link-text">
-            <div className="text" onClick={handleLogout}>
-               Logout
+            <div className="link-text">
+              <Link className="text" to="/profile">
+                Profile
+              </Link>
             </div>
-          
-          </div>
+            <div className="link-text">
+              <div className="text" onClick={handleLogout}>
+                Logout
+              </div>
+            </div>
           </div>
         </li>
       </ul>

@@ -36,7 +36,7 @@ const location = useLocation()
        </Link>
     </li>
     <li className="sidebar-link-item">
-       <Link to='/budget' className={`sidebar-link ${getActivePath('/budget')}`}> <div className="link-icon"><FaFileInvoiceDollar/></div> <div className="link-text">Budgets</div>
+       <Link to='/budget/list' className={`sidebar-link ${getActivePath('/budget/list')}`}> <div className="link-icon"><FaFileInvoiceDollar/></div> <div className="link-text"> My Budgets</div>
        </Link>
     </li>
 

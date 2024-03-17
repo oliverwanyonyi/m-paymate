@@ -17,8 +17,16 @@ module.exports = {
 
       },
       amount: {
-        type: Sequelize.DECIMAL(10, 2), // Assuming decimal for amount, adjust as necessary
+        type: Sequelize.DECIMAL(10, 2), 
         allowNull: false
+      },
+      expense_id:{
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'expenditures',
+          key: 'id'
+        }
       },
       user_id: {
         type: Sequelize.INTEGER,

@@ -9,6 +9,11 @@ const AppProvider = ({children}) => {
     const [snackbarOpen,setSnackbarOpen] = useState(false)
     const navigate = useNavigate()
 
+    const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+
     function closeSnackbar(event,reason){
         if (reason === 'clickaway') {
             return;
@@ -24,7 +29,7 @@ const AppProvider = ({children}) => {
         navigate(destination)
         }
   return (
-    <AppContext.Provider value={{snackbarOpen,closeSnackbar,openSnackbar,handleNavigate}}>
+    <AppContext.Provider value={{snackbarOpen,closeSnackbar,openSnackbar,handleNavigate, isOpen, handleOpen, handleClose  }}>
         {children}
     </AppContext.Provider>
   )

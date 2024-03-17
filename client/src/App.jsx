@@ -8,7 +8,6 @@ import { axiosInstance } from "./axios/axios";
 import { AuthContext } from "./store/AuthProvider";
 import Layout from "./Layout/Layout";
 import Bill from "./Bills/Bill";
-import Budget from "./Budget";
 import Profile from "./Profile";
 import ExpenditureList from "./Expenditure/ExpenditureList";
 import ExpenditureAdd from "./Expenditure/ExpenditureAdd";
@@ -16,6 +15,10 @@ import { useSnackbar } from "notistack";
 import AddBill from "./Bills/AddBill";
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import OCRComponent from "./TessaractTest";
+import NewBudget from "./Budget/NewBudget";
+import BudgetList from "./Budget/BudgetList";
+import EditBudgetCategory from "./Budget/EditBudgetCategory";
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { setIsAuth, isAuth, setAuthUser, authUser } = useContext(AuthContext);
@@ -171,12 +174,38 @@ function App() {
           )
         }
       />
-      <Route
-        path="/budget"
+
+<Route
+        path="/budget/list"
         element={
           isAuth ? (
             <Layout>
-              <Budget />
+              <BudgetList />
+            </Layout>
+          ) : (
+            <Login onLogin={handleLogin} />
+          )
+        }
+      />
+      <Route
+        path="/budget/add"
+        element={
+          isAuth ? (
+            <Layout>
+              <NewBudget />
+            </Layout>
+          ) : (
+            <Login onLogin={handleLogin} />
+          )
+        }
+      />
+
+<Route
+        path="/budget/category/:cateId/edit"
+        element={
+          isAuth ? (
+            <Layout>
+              <EditBudgetCategory />
             </Layout>
           ) : (
             <Login onLogin={handleLogin} />
@@ -196,6 +225,8 @@ function App() {
           )
         }
       />
+
+      <Route path='/test' element={<OCRComponent/>}/>
     </Routes>
   );
 }

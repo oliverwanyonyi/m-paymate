@@ -20,6 +20,7 @@ module.exports = {
         type: Sequelize.DECIMAL(10, 2), // Assuming decimal for amount, adjust as necessary
         allowNull: false
       },
+          
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,

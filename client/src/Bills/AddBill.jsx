@@ -16,13 +16,14 @@ import { AppContext } from "../store/AppProvider";
 const AddBill = () => {
   const [expenses, setExpenses] = useState([]);
   const [bills, setBills] = useState([
-    { expenseId: null, expense: "", amount: "", due_date: "" },
+    { expense_id: null, expense: "", amount: "", due_date: "" },
   ]);
   const [loading, setLoading] = useState(false);
   const { handleNavigate } = useContext(AppContext);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
+
     const fetchExpenses = async () => {
       try {
         const response = await axiosInstance.get("/expenditure/all?page=all");
@@ -31,13 +32,15 @@ const AddBill = () => {
         console.error(error);
       }
     };
+
+   
     fetchExpenses();
   }, []);
 
   const handleExpenseChange = (index, expenseId) => {
     console.log(index, expenseId);
     const updatedBills = [...bills];
-    updatedBills[index].expenseId = expenseId;
+    updatedBills[index].expense_id = expenseId;
     updatedBills[index].expense =
       expenses.find((expense) => expense.id === expenseId)?.name || "";
     updatedBills[index].amount =
@@ -54,7 +57,7 @@ const AddBill = () => {
   const addNewBillRow = () => {
     setBills((prevBills) => [
       ...prevBills,
-      { expenseId: null, expense: "", amount: "" },
+      { expense_id: null, expense: "", amount: "" },
     ]);
   };
 
@@ -110,7 +113,7 @@ const AddBill = () => {
                   label="Select Expense"
                   variant="outlined"
                   fullWidth
-                  value={bill.expenseId || ""}
+                  value={bill.expense_id || ""}
                   onChange={(e) => handleExpenseChange(index, e.target.value)}
                 >
                   {expenses?.map((expense) => (
@@ -120,6 +123,7 @@ const AddBill = () => {
                   ))}
                 </TextField>
               </Grid>
+              {/* <input type="hidden" name="expenditure" value={expense.id} /> */}
               <Grid item xs={12} sm={4}>
                 <TextField
                   label="Expenditure Name"

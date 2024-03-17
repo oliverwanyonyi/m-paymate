@@ -15,6 +15,14 @@ module.exports = (sequelize,Sequelize) =>{
             type: Sequelize.DECIMAL(10, 2), 
             allowNull: false
           },
+          category_id:{
+            type: Sequelize.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'budget_categories',
+              key: 'id'
+            }
+          },
           user_id: {
             type: Sequelize.INTEGER,
             allowNull: false,

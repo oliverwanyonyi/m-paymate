@@ -10,7 +10,7 @@ async function expenditureAdd(req,res,next ){
            return res.status(422).json(errors)
         }
 
-        await Expenditure.create({...req.body, user_id:req.user.id})
+        await Expenditure.create({...req.body,category_id:req.body.category ,user_id:req.user.id})
 
 
         res.send("Expenditure added")

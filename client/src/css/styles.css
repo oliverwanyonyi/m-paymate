@@ -50,7 +50,7 @@
 }
 
 .sidebar-link-item{
-    padding: 10px 14px;
+    padding: 0 14px;
 }
 
 .sidebar-link-item .sidebar-link{
@@ -193,4 +193,12 @@ font-weight: 900;
 
 .table-container{
     padding: 20px;
+}
+
+.form-grid-row{
+    margin-bottom: 20px;
+}
+
+.submit-btn{
+    margin-top: 30px!important;
 }
