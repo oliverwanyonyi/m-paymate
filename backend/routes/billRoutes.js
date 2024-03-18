@@ -18,5 +18,8 @@ router.route('/:billId/payBill').post(protect,getAuthToken, payBill)
 
 router.route('/payment/callback').post((req,res,next)=>{
     console.log(req.body);
+
 })
 module.exports = router
+
+

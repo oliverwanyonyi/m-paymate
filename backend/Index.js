@@ -46,7 +46,7 @@ db.sequelize
   .sync()
   .then(() => {
     console.log("Synced db.");
-    app.listen(3001, () => {
+    app.listen(3001 || process.env.PORT, () => {
       console.log("Server is running on port 3001.");
     });
   })

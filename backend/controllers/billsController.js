@@ -1,6 +1,6 @@
 const { getAuthToken } = require("../middlewares/getAuthToken");
 const db = require("../models");
-const axios =require('axios')
+const axios = require("axios");
 const Bill = db.Bill;
 const { generateTimestamp } = require("../utils/generateTimestamp");
 exports.createBill = async (req, res, next) => {
@@ -46,8 +46,7 @@ exports.deleteBill = async function (req, res, next) {
 
 exports.payBill = async (req, res, next) => {
   try {
-    let{ amount, phone, tillNumber, businessNumber, accountNumber } =
-      req.body;
+    let { amount, phone, tillNumber, businessNumber, accountNumber } = req.body;
     const paymentMethod = req.body.paymentMethod;
 
     const token = req.token;
@@ -57,33 +56,32 @@ exports.payBill = async (req, res, next) => {
       phoneNumber,
       transaction_type,
       transaction_desc,
-      callBackUrl, url;
+      callBackUrl,
+      url;
     callBackUrl =
-      "https://0d5f-102-212-236-135.ngrok-free.app/payment/callback";
+      "https://test-endpoint-6wa9.onrender.com//api/payment/callback";
     phoneNumber = "254" + phone.slice(1);
 
-    url = process.env.lipa_na_mpesa_url
+    url = process.env.lipa_na_mpesa_url;
     let timestamp = require("../utils/generateTimestamp")();
     const pass_key = process.env.pass_key;
 
-    console.log(timestamp,bs_short_code, pass_key);
+    console.log(timestamp, bs_short_code, pass_key);
 
-    
     transaction_desc = `Account ${phone} Paying for their bills`;
     if (paymentMethod === "till") {
       bs_short_code = tillNumber;
       accountNumber = "Pay Bill Online";
       transaction_type = "CustomerBuyGoodsOnline";
-      
     } else {
       bs_short_code = businessNumber;
       accountNumber = accountNumber;
       transaction_type = "CustomerPayBillOnline";
     }
 
-    const password = Buffer.from(`${bs_short_code}${pass_key}${timestamp}`).toString("base64");
-
-
+    const password = Buffer.from(
+      `${bs_short_code}${pass_key}${timestamp}`
+    ).toString("base64");
 
     const requestData = {
       BusinessShortCode: bs_short_code,
@@ -98,7 +96,7 @@ exports.payBill = async (req, res, next) => {
       AccountReference: accountNumber,
       TransactionDesc: transaction_desc,
     };
-console.log(requestData);
+    console.log(requestData);
     try {
       const { data } = await axios.post(url, requestData, {
         headers: {
@@ -106,15 +104,23 @@ console.log(requestData);
         },
       });
 
-     
-  
+      const checkout_request_id = data.CheckoutRequestID;
+      const merchat_request_id = data.MerchantRequestID;
+
+      await db.MpesaRequest.create({
+        phone: phoneNumber,
+        amount: amount,
+        account_reference: accountNumber,
+        user_id: req.user.id,
+        checkout_request_id,
+        merchat_request_id,
+      });
 
       return res.send({
         success: true,
-        message: data,
+        message: data.CustomerMessage,
       });
     } catch (error) {
-     
       return res.status(400).send({
         success: false,
         message: error.response?.data?.errorMessage,
