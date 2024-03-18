@@ -80,7 +80,7 @@ const BudgetList = () => {
   }
 
   async function deleteBudget(budget) {
-    await axiosInstance.delete(`/budget/:${budget}/delete`);
+    await axiosInstance.delete(`/budget/${budget}/delete`);
 
     enqueueSnackbar("Category Deleted", {
       variant: "success",

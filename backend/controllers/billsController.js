@@ -42,3 +42,10 @@ exports.deleteBill = async function(req, res, next) {
 }
 
 
+exports.payBill = async (req,res,next) =>{
+  try {
+    
+  } catch (error) {
+    next(error)
+  }
+}

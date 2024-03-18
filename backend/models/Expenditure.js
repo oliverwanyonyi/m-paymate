@@ -21,7 +21,8 @@ module.exports = (sequelize,Sequelize) =>{
             references: {
               model: 'budget_categories',
               key: 'id'
-            }
+            },
+            onDelete:"CASCADE"
           },
           user_id: {
             type: Sequelize.INTEGER,

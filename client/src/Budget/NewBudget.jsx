@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { TextField, MenuItem, Button, Grid, Box } from "@mui/material";
 import { axiosInstance } from "../axios/axios";
 import { useSnackbar } from "notistack";
+import { AppContext } from "../store/AppProvider";
 
 const NewBudget = () => {
   const [categories, setCategories] = useState([{ name: "", amount: "" }]);
   const [errors, setErrors] = useState([]);
   const {enqueueSnackbar} = useSnackbar();
-
+ const {handleNavigate} = useContext(AppContext)
 
   const budgetCategories = [
     'Housing (Rent/Mortgage)',
@@ -45,6 +46,8 @@ const NewBudget = () => {
       });
      
       enqueueSnackbar("Budget Created", {variant:'success', anchorOrigin:{horizontal:'center',vertical:'top'}})
+
+      handleNavigate('/budget/list')
     } catch (error) {
       
       if (error.response && error.response.status === 422) {
@@ -86,7 +89,7 @@ const NewBudget = () => {
               >
                 <TextField
                   select
-                  label="Expense Category"
+                  label="Budget Category"
                   variant="outlined"
                   value={category.name}
                   onChange={(e) => handleChange(index, "name", e.target.value)}
@@ -136,7 +139,7 @@ const NewBudget = () => {
             ))}
             <div style={{ display: "flex", gap: "16px" }}>
               <Button variant="outlined" onClick={handleAddRow}>
-                New Budget
+                New Category
               </Button>
               <Button type="submit" variant="contained" color="primary">
                 Submit

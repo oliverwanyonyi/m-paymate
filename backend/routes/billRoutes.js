@@ -11,4 +11,6 @@ router.route('/all').get(protect, getBills)
 
 router.route('/:billId/delete').delete(deleteBill)
 
+
+router.route('/:billId/payBill', protect, )
 module.exports = router

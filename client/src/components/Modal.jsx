@@ -24,6 +24,7 @@ const ModalComponent = ({children,title}) => {
             p: 4,
             outline: 'none',
           }}
+          className='modal-component'
         >
           <Box
             display="flex"

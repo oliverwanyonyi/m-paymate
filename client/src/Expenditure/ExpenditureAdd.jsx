@@ -88,7 +88,7 @@ async function getExpenditure(expenditure){
   try {
   const {data} = await axiosInstance.get(`/expenditure/${expenditure}`)
 
-  setFormData({...formData, name:data?.name, amount:data?.amount})
+  setFormData({...formData, name:data?.name, category: data?.category_id,amount:data?.amount})
     
   } catch (error) {   
   }
@@ -124,6 +124,7 @@ fetchBudgetCategories()
                 label="Budget Category"
                 select
                 variant="outlined"
+                disabled={expeId ? true :false}
                 fullWidth
                 value={formData?.category}
                 onChange={(e) => changeHandler("category", e.target.value)}

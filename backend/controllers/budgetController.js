@@ -174,6 +174,7 @@ exports.deleteBudgetCategory = async (req, res, next) => {
 };
 
 exports.deleteBudget = async (req, res, next) => {
+
   try {
     const budget = await Budget.findOne({
       where: {
@@ -182,13 +183,18 @@ exports.deleteBudget = async (req, res, next) => {
       },
     });
 
+    
+
+
     await budget.destroy();
+
+    res.send('budget removed')
   } catch (error) {
     next(error);
   }
 };
 
-exports.addBudgetCategory = async (req, rex, next) => {
+exports.addBudgetCategory = async (req, res, next) => {
   try {
     const errors = validationResult(req);
 
@@ -200,7 +206,8 @@ exports.addBudgetCategory = async (req, rex, next) => {
       res.status(404).json("budget not found");
     }
 
-    await BudgetCategory.create(req.body);
+    console.log(req.body);
+    await BudgetCategory.create({...req.body, budget_id:req.params.budgetId});
 
     res.send("budget catgory added");
   } catch (error) {

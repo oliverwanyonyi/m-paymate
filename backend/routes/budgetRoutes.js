@@ -58,7 +58,7 @@ router
   router.route('/category/:cateId/delete').delete(protect,deleteBudgetCategory)
 
 
-  router.route('/:budgetId/delete', protect, deleteBudget)
+  router.route('/:budgetId/delete').delete(protect, deleteBudget)
 
 
   router.route('/:budgetId/category/add').post(protect, categoryValidationRule, addBudgetCategory)

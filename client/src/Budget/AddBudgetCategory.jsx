@@ -87,7 +87,7 @@ const AddBudgetCategory = () => {
                   variant="outlined"
                   fullWidth
                   value={formData.name}
-                  onChange={(e) => handleChange(index, "name", e.target.value)}
+                  onChange={(e) => setFormData({...formData, name:e.target.value})}
                   error={error?.name}
                   helperText={
                     error?.name
@@ -121,7 +121,7 @@ const AddBudgetCategory = () => {
                 onClick={submitHandler}
                 color="primary"
               >
-                {loading ?  <CircularProgresss /> :"Add Category"}
+                {loading ?  <CircularProgress /> :"Add Category"}
               </Button>
             </Grid>
           </Grid>

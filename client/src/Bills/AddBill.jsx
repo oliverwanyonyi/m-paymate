@@ -16,7 +16,7 @@ import { AppContext } from "../store/AppProvider";
 const AddBill = () => {
   const [expenses, setExpenses] = useState([]);
   const [bills, setBills] = useState([
-    { expense_id: null, expense: "", amount: "", due_date: "" },
+    { expense_id: null, expense: "", amount: "", due_date: null},
   ]);
   const [loading, setLoading] = useState(false);
   const { handleNavigate } = useContext(AppContext);
