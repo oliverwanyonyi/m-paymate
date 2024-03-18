@@ -11,8 +11,7 @@ const checkExistingEmail = async (email) => {
       },
     });
 
-    console.log("gdfghyi "+existingUser,User);
-
+    
 
     return !!existingUser;
   } catch (error) {
