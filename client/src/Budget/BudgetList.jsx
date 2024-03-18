@@ -106,7 +106,7 @@ const BudgetList = () => {
 
   return (
     <div className="route">
-      <Modal title={"Budget Categories"}>
+      <Modal title={"Budget Categories"} >
         <Box display="flex" className="page-header">
           <Button
             variant="contained"
@@ -121,7 +121,7 @@ const BudgetList = () => {
             New Category
           </Button>
         </Box>
-        <Table>
+        <Table className="category-list">
           <TableHead className="table-head">
             <TableRow>
               <TableCell>#</TableCell>

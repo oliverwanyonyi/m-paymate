@@ -1,0 +1,31 @@
+.info-box {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .green-bg {
+    background-color: #d4edda;
+  }
+  
+  .red-bg {
+    background-color: #f8d7da;
+  }
+  
+  .green-text {
+    color: #155724;
+  }
+  
+  .red-text {
+    color: #721c24;
+  }
+  
+  .balance {
+    font-size: 13px;
+    font-weight: bold;
+    
+  }
+  
+  
+  

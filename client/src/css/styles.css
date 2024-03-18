@@ -205,5 +205,9 @@ font-weight: 900;
 
 
 .modal-component{
-    width: 500px;
+    min-width: 500px;
+}
+
+.category-list th,td{
+    white-space: nowrap;
 }

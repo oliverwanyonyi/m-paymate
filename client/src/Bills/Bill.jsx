@@ -27,8 +27,12 @@ import PaymentIcon from "@mui/icons-material/Payments";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { format } from "date-fns";
 import ModalComponent from "../components/Modal";
+import { enqueueSnackbar } from "notistack";
+import { AuthContext } from "../store/AuthProvider";
+import InfoBox from "../components/InfoBox";
 const Bill = () => {
   const { handleNavigate } = useContext(AppContext);
+  const { authUser } = useContext(AuthContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [data, setData] = useState([]);
   const [pageCount, setPageCount] = useState(0);
@@ -38,12 +42,48 @@ const Bill = () => {
   const [amount, setAmount] = useState(0);
   const [tillNumber, setTillNumber] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
-  const [bussinessNumber, setBusinessNumber] = useState("");
+  const [businessNumber, setBusinessNumber] = useState("");
   const [phone, setPhone] = useState("");
-  const { handleOpen, handlClose } = useContext(AppContext);
+  const { handleOpen, handleClose } = useContext(AppContext);
+  const [errors, setErrors] = useState({});
+
   function onNavigate(path) {
     handleNavigate(path);
   }
+
+  const validateForm = () => {
+    let errors = {};
+
+    if (paymentMethod === "paybill") {
+      if (!businessNumber) {
+        errors.businessNumber = "Business number is required";
+      }
+      if (!accountNumber) {
+        errors.accountNumber = "Account number is required";
+      }
+    } else if (paymentMethod === "till") {
+      if (!tillNumber) {
+        errors.tillNumber = "Till number is required";
+      }
+    }
+
+    if (!amount) {
+      errors.amount = "Amount is required";
+    } else if (isNaN(amount) || amount <= 0) {
+      errors.amount = "Amount can't be less than 1";
+    }
+
+    if (paymentMethod === "till" || paymentMethod === "paybill") {
+      if (!phone) {
+        errors.phone = "Phone number is required";
+      } else if (!/^(07\d{8}|01\d{8})$/.test(phone)) {
+        errors.phone = "Invalid phone number format";
+      }
+    }
+
+    setErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);
@@ -51,7 +91,8 @@ const Bill = () => {
 
   function handleClick(bill) {
     setSelectedBill(bill);
-
+    setAmount(bill?.amount);
+    setPhone(authUser?.phoneNumber || "");
     handleOpen();
   }
 
@@ -89,22 +130,56 @@ const Bill = () => {
     setPaymentMethod(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = {
-      paymentType,
-      paymentMethod,
-    };
+    if (validateForm()) {
+      const formData = {
+        amount,
+        phone,
+        tillNumber,
+        accountNumber,
+        paymentMethod,
+        businessNumber,
+      };
 
-    axios
-      .post("/process-payment", formData)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
+      let message;
+
+      if (paymentType === "online") {
+        const { data } = await axiosInstance.post(
+          `/bills/${selectedBill?.id}/payBill`,
+          {
+            ...formData,
+            expense_id: selectedBill.expense_id,
+            bill_id: selectedBill.id,
+          }
+        );
+
+        message = data?.message;
+      } else {
+        await axiosInstance.post(`/bills/${selectedBill?.id}/payment/record`, {
+          amount,
+          expense_id: selectedBill.expense_id,
+          bill_id: selectedBill.id,
+        });
+
+        message = "Payment Updated";
+      }
+
+      enqueueSnackbar(message, {
+        anchorOrigin: { horizontal: "center", vertical: "top" },
       });
+
+      handleClose();
+      setSelectedBill();
+      setAccountNumber("");
+      setTillNumber("");
+      setAmount("");
+      setBusinessNumber("");
+      setPhone("");
+    } else {
+      return;
+    }
   };
 
   return (
@@ -114,7 +189,6 @@ const Bill = () => {
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <FormControl fullWidth>
-                {/* <InputLabel id="payment-type-label">Payment Type</InputLabel> */}
                 <TextField
                   select
                   labelId="payment-type-label"
@@ -122,10 +196,8 @@ const Bill = () => {
                   value={paymentType}
                   onChange={handlePaymentTypeChange}
                 >
-                  <MenuItem value="electronic">
-                    Pay Bill Electronically
-                  </MenuItem>
-                  <MenuItem value="record">Record Transaction Details</MenuItem>
+                  <MenuItem value="online">Pay Bill Online</MenuItem>
+                  <MenuItem value="record">Record Payment Information</MenuItem>
                 </TextField>
               </FormControl>
             </Grid>
@@ -138,14 +210,17 @@ const Bill = () => {
                     variant="outlined"
                     fullWidth
                     type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    error={!!errors.amount}
+                    helperText={errors.amount}
                   />
                 </Grid>
               </>
             )}
-            {paymentType === "electronic" && (
+            {paymentType === "online" && (
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  {/* <InputLabel id="payment-method-label">Payment Method</InputLabel> */}
                   <TextField
                     select
                     labelId="payment-method-label"
@@ -166,8 +241,10 @@ const Bill = () => {
                     label="Business Number"
                     variant="outlined"
                     fullWidth
-                    value={bussinessNumber}
+                    value={businessNumber}
                     onChange={(e) => setBusinessNumber(e.target.value)}
+                    error={!!errors.businessNumber}
+                    helperText={errors.businessNumber}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -177,6 +254,8 @@ const Bill = () => {
                     fullWidth
                     value={accountNumber}
                     onChange={(e) => setAccountNumber(e.target.value)}
+                    error={!!errors.accountNumber}
+                    helperText={errors.accountNumber}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -186,6 +265,8 @@ const Bill = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     fullWidth
+                    error={!!errors.phone}
+                    helperText={errors.phone}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -196,6 +277,8 @@ const Bill = () => {
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                    error={!!errors.amount}
+                    helperText={errors.amount}
                   />
                 </Grid>
               </>
@@ -210,6 +293,8 @@ const Bill = () => {
                     onChange={(e) => setTillNumber(e.target.value)}
                     variant="outlined"
                     fullWidth
+                    error={!!errors.tillNumber}
+                    helperText={errors.tillNumber}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -220,6 +305,8 @@ const Bill = () => {
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                    error={!!errors.amount}
+                    helperText={errors.amount}
                   />
                 </Grid>
                 <Grid item xs={12}>
@@ -229,6 +316,8 @@ const Bill = () => {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     fullWidth
+                    error={!!errors.phone}
+                    helperText={errors.phone}
                   />
                 </Grid>
               </>
@@ -262,7 +351,6 @@ const Bill = () => {
                 <TableCell>Expense</TableCell>
                 <TableCell>Amount</TableCell>
                 <TableCell>Due Date</TableCell>
-                <TableCell>Status</TableCell>
                 <TableCell>Balance</TableCell>
                 <TableCell>Action</TableCell>
               </TableRow>
@@ -279,18 +367,16 @@ const Bill = () => {
                   <TableCell component="th" scope="row">
                     {row.expense}
                   </TableCell>
-                  <TableCell align="right">Ksh{row.amount}</TableCell>
+                  <TableCell >Ksh{row.amount}</TableCell>
 
-                  <TableCell align="right">
+                  <TableCell >
                     {format(row.due_date, "yyyy/MM/dd", {
                       timeZone: "Africa/Nairobi",
                     })}
                   </TableCell>
 
-                  <TableCell align="right">{row.status}</TableCell>
-
-                  <TableCell align="right">
-                    Ksh {row.amount - (row.balance || 0)}
+                  <TableCell >
+                    <InfoBox balance={row.balance} />
                   </TableCell>
 
                   <TableCell>

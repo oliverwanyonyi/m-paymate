@@ -17,11 +17,11 @@ module.exports = {
       allowNull: false,
     },
     amount: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DOUBLE(10, 2),
       allowNull: false,
     },
     total_amount_spent: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DOUBLE(10, 2),
       allowNull: false,
       defaultValue: 0,
     },

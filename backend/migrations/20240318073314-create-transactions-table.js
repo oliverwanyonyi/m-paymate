@@ -13,7 +13,7 @@ module.exports = {
       type: Sequelize.INTEGER,
     },
     amount: {
-      type: DataTypes.DECIMAL(10, 2),
+      type: DataTypes.DOUBLE(10, 2),
       allowNull: false,
     }, 
     category:{
@@ -31,6 +31,14 @@ module.exports = {
         key:'id'
       },
       allowNull:true 
+    },
+    bill_id:{
+      type: Sequelize.INTEGER,
+      references: {
+        model: "bills",
+        key: "id",
+      },
+      allowNull: true,
     },
     transaction_date:{
       type:Sequelize.DATE,

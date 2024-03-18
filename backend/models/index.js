@@ -3,7 +3,7 @@
 const Sequelize = require("sequelize");
 const db = {};
 
-require('dotenv').config()
+require("dotenv").config();
 
 const sequelize = new Sequelize(process.env.DB_NAME, "root", "", {
   host: process.env.DB_HOST,
@@ -27,5 +27,8 @@ db.User.hasMany(db.Bill, { foreignKey: "user_id" });
 
 db.Expenditure.belongsTo(db.User, { foreignKey: "user_id" });
 db.Bill.belongsTo(db.User, { foreignKey: "user_id" });
+
+db.Bill.hasMany(db.Transaction, { foreignKey: "bill_id", as:"transactions" });
+db.Transaction.belongsTo(db.Bill, { foreignKey: "bill_id" });
 
 module.exports = db;

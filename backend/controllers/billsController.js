@@ -27,7 +27,25 @@ exports.getBills = async function (req, res, next) {
       order: [["createdAt", "DESC"]],
       offset: (page - 1) * perPage,
       limit: perPage,
+      
     });
+
+    for (const bill of bills) {
+    
+      const transactions = await db.Transaction.findAll({
+        where: {
+          bill_id: bill.id,
+        },
+      });
+
+      const totalTransactionAmount = transactions.reduce(
+        (total, transaction) => total + transaction.amount,
+        0
+      );
+      const balance = bill.amount - totalTransactionAmount;
+
+      bill.balance = balance;
+    }
 
     return res.json({ pageCount: Math.ceil(count / perPage), bills });
   } catch (error) {
@@ -96,7 +114,7 @@ exports.payBill = async (req, res, next) => {
       AccountReference: accountNumber,
       TransactionDesc: transaction_desc,
     };
-    console.log(requestData);
+    
     try {
       const { data } = await axios.post(url, requestData, {
         headers: {
@@ -114,6 +132,8 @@ exports.payBill = async (req, res, next) => {
         user_id: req.user.id,
         checkout_request_id,
         merchat_request_id,
+        expense_id: req.body.expense_id,
+        bill_id: req.body.bill_id,
       });
 
       return res.send({
@@ -126,6 +146,41 @@ exports.payBill = async (req, res, next) => {
         message: error.response?.data?.errorMessage,
       });
     }
+  } catch (error) {
+    next(error);
+  }
+};
+exports.recordOfflinePayment = async (req, res, next) => {
+  try {
+    const expense = await db.Expenditure.findByPk(req.body.expense_id);
+
+    if (!expense) {
+      return res.status(404).send("Expenditure not found");
+    }
+
+    const budget_category = await db.BudgetCategory.findOne({
+      where: { id: expense.category_id },
+    });
+
+    if (!budget_category) {
+      return res.status(404).send("Budget Category not found");
+    }
+
+    const amount = parseFloat(req.body.amount);
+
+    budget_category.total_amount_spent += amount;
+
+    await budget_category.save();
+
+    await db.Transaction.create({
+      user_id: req.user.id,
+      amount: amount,
+      category: budget_category.id,
+      transaction_date: new Date(),
+      bill_id: req.body.bill_id,
+    });
+
+    res.send("Transaction details updated");
   } catch (error) {
     next(error);
   }

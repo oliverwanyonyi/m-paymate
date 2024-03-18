@@ -17,7 +17,7 @@ module.exports = {
 
       },
       amount: {
-        type: Sequelize.DECIMAL(10, 2), // Assuming decimal for amount, adjust as necessary
+        type: Sequelize.DOUBLE(10, 2), // Assuming DOUBLE for amount, adjust as necessary
         allowNull: false
       },
           

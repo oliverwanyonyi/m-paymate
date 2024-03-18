@@ -17,7 +17,7 @@ module.exports = {
         allowNull: false,
       },
       amount: {
-        type: DataTypes.DECIMAL(10, 2),
+        type: DataTypes.DOUBLE(10, 2),
         allowNull: false,
       },
       account_reference: {
@@ -32,6 +32,10 @@ module.exports = {
           key: "id",
         },
       },
+      mpesa_receipt_no:{
+        allowNull:true,
+        type:Sequelize.STRING
+      },
         checkout_request_id: {
           type: Sequelize.STRING,
           allowNull: false,
@@ -39,6 +43,22 @@ module.exports = {
         merchat_request_id: {
           type: Sequelize.STRING,
           allowNull: false,
+        },
+        expense_id:{
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: {
+            model: "expenditures",
+            key: "id",
+          },
+        },
+        bill_id:{
+          type: Sequelize.INTEGER,
+          references: {
+            model: "bills",
+            key: "id",
+          },
+          allowNull: true,
         },
         status: {
           type: Sequelize.ENUM("initiated", "failed", "paid"),

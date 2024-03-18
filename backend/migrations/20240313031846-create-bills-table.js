@@ -17,7 +17,7 @@ module.exports = {
 
       },
       amount: {
-        type: Sequelize.DECIMAL(10, 2), 
+        type: Sequelize.DOUBLE(10, 2), 
         allowNull: false
       },
       expense_id:{

@@ -153,7 +153,7 @@ const AddBill = () => {
             </Grid>
           ))}
           <div className="btn-row">
-            <Button variant="contained" onClick={addNewBillRow}>
+            <Button variant="outlined" onClick={addNewBillRow}>
               New Bill
             </Button>
             <Button

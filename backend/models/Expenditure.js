@@ -12,7 +12,7 @@ module.exports = (sequelize,Sequelize) =>{
             unique:true
           },
           amount: {
-            type: Sequelize.DECIMAL(10, 2), 
+            type: Sequelize.DOUBLE(10, 2), 
             allowNull: false
           },
           category_id:{
