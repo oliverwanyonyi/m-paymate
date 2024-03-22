@@ -8,11 +8,12 @@ module.exports = {
       "category_id",
       {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'budget_categories',
           key: 'id'
-        }
+        },
+        onDelete:"CASCADE"
       }
     );
   },

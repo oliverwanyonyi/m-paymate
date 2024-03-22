@@ -107,12 +107,12 @@ const BudgetList = () => {
   return (
     <div className="route">
       <Modal title={"Budget Categories"} >
-        <Box display="flex" className="page-header">
+        <Box display="flex" className="page-hepader">
           <Button
             variant="contained"
             color="primary"
             startIcon={<MdAdd />} // Add the Add icon as start icon
-            sx={{ marginBottom: 2 }} // Add some margin at the bottom for spacing
+            sx={{ marginBottom: 1.5 }} // Add some margin at the bottom for spacing
             onClick={() => {
               handleClose();
               onNavigate(`/budget/${selectedbudget}/category/add`);
@@ -121,6 +121,8 @@ const BudgetList = () => {
             New Category
           </Button>
         </Box>
+        <div className="table-body-o">
+
         <Table className="category-list">
           <TableHead className="table-head">
             <TableRow>
@@ -168,6 +170,8 @@ const BudgetList = () => {
             ))}
           </TableBody>
         </Table>
+        </div>
+
       </Modal>
       <h3 className="page-title">Budgets</h3>
       <div className="content">
@@ -176,11 +180,11 @@ const BudgetList = () => {
             <Button
               variant="contained"
               color="primary"
-              startIcon={<MdAdd />} // Add the Add icon as start icon
+              endIcon={<MdAdd />} // Add the Add icon as start icon
               sx={{ marginBottom: 2 }} // Add some margin at the bottom for spacing
               onClick={() => onNavigate("/budget/add")}
             >
-              Add Budget
+              New Budget
             </Button>
           </Box>
           <Table>

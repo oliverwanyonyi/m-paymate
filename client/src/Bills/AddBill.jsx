@@ -8,6 +8,9 @@ import {
   MenuItem,
 } from "@mui/material";
 
+
+
+
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { axiosInstance } from "../axios/axios";
 import { useSnackbar } from "notistack";
@@ -143,12 +146,15 @@ const AddBill = () => {
                 />
               </Grid>
               <Grid item xs={12} sm={2}>
-                <DatePicker
+              <DatePicker
                   label="Due Date"
                   value={bill.due_date}
+                  defaultValue={new Date()}
+            disablePast
                   onChange={(date) => handleDateChange(index, date)}
                   renderInput={(params) => <TextField {...params} />}
                 />
+               
               </Grid>
             </Grid>
           ))}

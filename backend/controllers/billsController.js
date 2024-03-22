@@ -84,7 +84,7 @@ exports.payBill = async (req, res, next) => {
     let timestamp = require("../utils/generateTimestamp")();
     const pass_key = process.env.pass_key;
 
-    console.log(timestamp, bs_short_code, pass_key);
+    
 
     transaction_desc = `Account ${phone} Paying for their bills`;
     if (paymentMethod === "till") {
@@ -152,6 +152,8 @@ exports.payBill = async (req, res, next) => {
 };
 exports.recordOfflinePayment = async (req, res, next) => {
   try {
+
+    console.log(req.body);
     const expense = await db.Expenditure.findByPk(req.body.expense_id);
 
     if (!expense) {
@@ -175,6 +177,7 @@ exports.recordOfflinePayment = async (req, res, next) => {
     await db.Transaction.create({
       user_id: req.user.id,
       amount: amount,
+      mpesa_receipt_no:req.body.receipt_no,
       category: budget_category.id,
       transaction_date: new Date(),
       bill_id: req.body.bill_id,

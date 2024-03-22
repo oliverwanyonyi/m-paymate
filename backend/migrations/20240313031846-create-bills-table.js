@@ -22,11 +22,12 @@ module.exports = {
       },
       expense_id:{
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: 'expenditures',
           key: 'id'
-        }
+        },
+        onDelete: 'SET NULL'
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -34,17 +35,18 @@ module.exports = {
         references: {
           model: 'users',
           key: 'id'
-        }
+        },
+        onDelete:"CASCADE"
       },
-      status:{
-        type: Sequelize.ENUM(
-          "pending",
-          "partially-paid",
-          "paid",
-        ),
+      // status:{
+      //   type: Sequelize.ENUM(
+      //     "pending",
+      //     "partially-paid",
+      //     "paid",
+      //   ),
         
-        defaultValue:'pending'
-      }, 
+      //   defaultValue:'pending'
+      // }, 
       balance: {
         type:Sequelize.DOUBLE(10,2),
 

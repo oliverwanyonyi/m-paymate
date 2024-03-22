@@ -22,7 +22,8 @@ module.exports = {
         model:"budget_categories",
         key:'id'
       },
-      allowNull:true
+      allowNull:true,
+      onDelete: 'SET NULL'
     },
     user_id:{
       type:Sequelize.INTEGER,
@@ -30,7 +31,8 @@ module.exports = {
         model:"users",
         key:'id'
       },
-      allowNull:true 
+      allowNull:false ,
+      onDelete:"CASCADE"
     },
     bill_id:{
       type: Sequelize.INTEGER,
@@ -39,6 +41,11 @@ module.exports = {
         key: "id",
       },
       allowNull: true,
+      onDelete: 'SET NULL'
+    },
+    mpesa_receipt_no:{
+      allowNull:true,
+      type:Sequelize.STRING
     },
     transaction_date:{
       type:Sequelize.DATE,

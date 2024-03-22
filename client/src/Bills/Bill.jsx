@@ -43,9 +43,11 @@ const Bill = () => {
   const [tillNumber, setTillNumber] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
   const [businessNumber, setBusinessNumber] = useState("");
+  const[ receipt_no,setReceiptNo] = useState('')
   const [phone, setPhone] = useState("");
   const { handleOpen, handleClose } = useContext(AppContext);
   const [errors, setErrors] = useState({});
+  const [loadPayment,setLoadPayment] = useState(false)
 
   function onNavigate(path) {
     handleNavigate(path);
@@ -71,6 +73,11 @@ const Bill = () => {
       errors.amount = "Amount is required";
     } else if (isNaN(amount) || amount <= 0) {
       errors.amount = "Amount can't be less than 1";
+    }
+    if(paymentType === 'record'){
+      if(!receipt_no){
+      errors.receipt_no = "Please enter mpesa receipt number"
+      }
     }
 
     if (paymentMethod === "till" || paymentMethod === "paybill") {
@@ -131,8 +138,10 @@ const Bill = () => {
   };
 
   const handleSubmit = async (e) => {
+    try {
     e.preventDefault();
 
+    setLoadPayment(true)
     if (validateForm()) {
       const formData = {
         amount,
@@ -141,6 +150,7 @@ const Bill = () => {
         accountNumber,
         paymentMethod,
         businessNumber,
+        receipt_no
       };
 
       let message;
@@ -158,6 +168,7 @@ const Bill = () => {
         message = data?.message;
       } else {
         await axiosInstance.post(`/bills/${selectedBill?.id}/payment/record`, {
+          ...formData,
           amount,
           expense_id: selectedBill.expense_id,
           bill_id: selectedBill.id,
@@ -177,9 +188,26 @@ const Bill = () => {
       setAmount("");
       setBusinessNumber("");
       setPhone("");
+      setReceiptNo('')
+
+      getData()
+
     } else {
       return;
     }
+
+    } catch (error) {
+      enqueueSnackbar(error?.response?.data?.message || error?.message || "Something went wrong", {
+        variant: "error",
+        anchorOrigin: { horizontal: "center", vertical: "bottom" },
+      });
+
+      
+    }
+      finally{
+        setLoadPayment(false)
+      }
+    
   };
 
   return (
@@ -214,6 +242,17 @@ const Bill = () => {
                     onChange={(e) => setAmount(e.target.value)}
                     error={!!errors.amount}
                     helperText={errors.amount}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <TextField
+                    label="Mpesa Receipt No"
+                    variant="outlined"
+                    fullWidth
+                    value={receipt_no}
+                    onChange={(e) => setReceiptNo(e.target.value)}
+                    error={!!errors.receipt_no}
+                    helperText={errors.receipt_no}
                   />
                 </Grid>
               </>
@@ -323,7 +362,7 @@ const Bill = () => {
               </>
             )}
             <Grid item xs={12}>
-              <Button type="submit" variant="contained" color="primary">
+              <Button type="submit" disabled={loadPayment} variant="contained" color="primary">
                 {paymentType === "electronic" ? "Initate Payment" : "Submit"}
               </Button>
             </Grid>
@@ -388,6 +427,7 @@ const Bill = () => {
                         <DeleteOutlineIcon />
                       </IconButton>
 
+{row?.balance > 0 &&
                       <Button
                         variant="contained"
                         color="primary"
@@ -396,6 +436,7 @@ const Bill = () => {
                       >
                         Pay
                       </Button>
+}
                     </div>
                   </TableCell>
                 </TableRow>

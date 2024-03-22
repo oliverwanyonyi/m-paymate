@@ -4,7 +4,7 @@ import { FaMoneyBillTrendUp } from "react-icons/fa6";
 import { MdDashboard } from "react-icons/md";
 import { FaFileInvoiceDollar } from "react-icons/fa";
 import { FaWallet } from "react-icons/fa";
-
+import whitelogo from '../assets/mpaymate-white.png'
 const Sidebar = () => {
 const location = useLocation()
 
@@ -20,7 +20,10 @@ const location = useLocation()
   return (
     <div className='sidebar'>
     <div>
-        <Link className="sidebar-brand">M-Paymate</Link>
+        <Link className="sidebar-brand">
+         
+         <img src={whitelogo} alt="" />
+        </Link>
     </div>
 
 

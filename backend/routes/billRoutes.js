@@ -41,12 +41,19 @@ router.route("/payment/callback").post(async (req, res, next) => {
       });
 
       if (mpesaRequest) {
-        await mpesaRequest.update({ status: "paid" });
+        await mpesaRequest.update({ status: "paid",
+        mpesa_receipt_no:receipt_no,
+        mpesa_result_desc:ResultDesc
+      });
 
         const { Item } = CallbackMetadata;
         const amount = Item.find((item) => item.Name === "Amount").Value;
         const transactionDate = Item.find(
           (item) => item.Name === "TransactionDate"
+        ).Value;
+
+        const receipt_no = Item.find(
+          (item) => item.Name === "MpesaReceiptNumber"
         ).Value;
 
         const expenditure = await Expenditure.findByPk(mpesaRequest.expeId);
@@ -65,7 +72,8 @@ router.route("/payment/callback").post(async (req, res, next) => {
             user_id: mpesaRequest.user_id,
             transaction_date: new Date(transactionDate),
             category:budget_category.id,
-            bill_id:mpesaRequest.bill_id
+            bill_id:mpesaRequest.bill_id,
+            mpesa_receipt_no:receipt_no,
           });
         }
 

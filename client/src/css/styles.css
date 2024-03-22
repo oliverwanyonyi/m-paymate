@@ -12,7 +12,9 @@
     height: 100vh;
     background: #10e30c;
 }
-
+.sidebar-brand img{
+    width: 140px;
+}
  a{
     text-decoration: none;
 }
@@ -210,4 +212,30 @@ font-weight: 900;
 
 .category-list th,td{
     white-space: nowrap;
+}
+
+.info{
+    text-align: center;
+}
+.info a{
+    color: #1976d2;
+    font-weight: 600;
+}
+
+.auth-header{
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.auth-logo{
+    width: 150px;
+}
+
+.table-body-o{
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.p-form-container{
+    padding: 50px 14px 20px;
 }

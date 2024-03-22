@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Button, CircularProgress, Snackbar, TextField, Typography } from "@mui/material";
+import { Avatar, Button, CircularProgress, Snackbar, TextField, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 import styled from "@emotion/styled";
-
+import logo from './assets/m-paymate.png'
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   height: 100vh;
 `;
@@ -14,9 +13,14 @@ const Container = styled.div`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 370px;
+    width: 400px;
+  
+  margin:0 auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,.15);
+  padding:20px;
+  border-radius:10px;
 `;
+
 
 const Input = styled(TextField)`
   margin-bottom: 16px;
@@ -25,6 +29,7 @@ const Input = styled(TextField)`
 
 const LoginButton = styled(Button)`
   margin-top: 16px;
+  margin-bottom:16px;
 `;
 
 const Login = ({ onLogin,errors }) => {
@@ -52,20 +57,31 @@ const Login = ({ onLogin,errors }) => {
 
     
     
-      <Typography variant="h4" component="h1">
-        Login 
-      </Typography>
+      
 
 
       <Form onSubmit={handleSubmit}>
+        <div className="auth-header">
+        <Typography variant="h4" component="h1">
+       <img src={logo} className="auth-logo" />
+      </Typography>
+
+      <Typography variant="body1" gutterBottom>
+      Login to continue
+      </Typography>
+        </div>
+
+     
         <Input
-          label="Email"
+          label="Email or Username"
           value={formData.email}
           onChange={(event) => changeHandler(event.target.value, "email")}
           error={errors?.email}
           helperText={errors?.email}
-
+          placeholder="Email Or Username"
         />
+
+        
        
         <Input
           label="Password"
@@ -74,11 +90,12 @@ const Login = ({ onLogin,errors }) => {
           onChange={(event) => changeHandler(event.target.value, "password")}
           error={errors?.password}
           helperText={errors?.password}
+          placeholder="********"
         />
         <LoginButton disabled={loading} variant="contained" color="primary" type="submit">
         {loading ? <CircularProgress/> :" Login"}
         </LoginButton>
-        <p>
+        <p className="info">
           Don't have an account? <Link to="/Register">Register</Link>
         </p>
       </Form>

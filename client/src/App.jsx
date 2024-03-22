@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
-// import axios from 'axios';
 import Login from "./login";
 import Register from "./Register";
 import Home from "./Home";
@@ -8,7 +7,7 @@ import { axiosInstance } from "./axios/axios";
 import { AuthContext } from "./store/AuthProvider";
 import Layout from "./Layout/Layout";
 import Bill from "./Bills/Bill";
-import Profile from "./Profile";
+import Profile from "./profile/Profile";
 import ExpenditureList from "./Expenditure/ExpenditureList";
 import ExpenditureAdd from "./Expenditure/ExpenditureAdd";
 import { useSnackbar } from "notistack";
@@ -21,7 +20,6 @@ import BudgetList from "./Budget/BudgetList";
 import EditBudgetCategory from "./Budget/EditBudgetCategory";
 import AddBudgetCategory from "./Budget/AddBudgetCategory";
 function App() {
-  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { setIsAuth, isAuth, setAuthUser, authUser } = useContext(AuthContext);
 
   const { enqueueSnackbar } = useSnackbar();
@@ -38,6 +36,10 @@ function App() {
         setAuthUser(response.data.user);
         localStorage.setItem("auth_user", JSON.stringify(response.data.user));
         navigate("/dashboard");
+        enqueueSnackbar("Login Successful", {
+          variant: "success",
+          anchorOrigin: { horizontal: "center", vertical: "top" },
+        });
       }
     } catch (error) {
       if (error?.response?.data?.errors) {
@@ -55,7 +57,7 @@ function App() {
         return;
       }
 
-      enqueueSnackbar(error?.response?.data?.message || "Newtwork Error", {
+      enqueueSnackbar(error?.response?.data?.message || "Network Error", {
         variant: "error",
         anchorOrigin: { horizontal: "center", vertical: "bottom" },
       });
@@ -76,6 +78,10 @@ function App() {
         setAuthUser(response.data.user);
         localStorage.setItem("auth_user", JSON.stringify(response.data.user));
         navigate("/dashboard");
+        enqueueSnackbar("Account created", {
+          variant: "success",
+          anchorOrigin: { horizontal: "center", vertical: "bottom" },
+        });
       }
     } catch (error) {
       console.log(error);
@@ -229,6 +235,7 @@ function App() {
         }
       />
 
+<Route path='/user/profile'  element={<Layout><Profile/></Layout>} />
       <Route path='/test' element={<OCRComponent/>}/>
     </Routes>
   );

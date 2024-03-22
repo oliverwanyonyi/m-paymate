@@ -31,10 +31,7 @@ module.exports = {
           model: "users",
           key: "id",
         },
-      },
-      mpesa_receipt_no:{
-        allowNull:true,
-        type:Sequelize.STRING
+        onDelete:"CASCADE"
       },
         checkout_request_id: {
           type: Sequelize.STRING,
@@ -44,6 +41,14 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
+        mpesa_receipt_no:{
+          allowNull:true,
+          type:Sequelize.STRING
+        },
+        mpesa_result_desc:{
+          allowNull:true,
+          type:Sequelize.STRING
+        },
         expense_id:{
           type: DataTypes.INTEGER,
           allowNull: true,
@@ -51,6 +56,7 @@ module.exports = {
             model: "expenditures",
             key: "id",
           },
+          onDelete: 'SET NULL'
         },
         bill_id:{
           type: Sequelize.INTEGER,
@@ -59,6 +65,7 @@ module.exports = {
             key: "id",
           },
           allowNull: true,
+          onDelete:"CASCADE"
         },
         status: {
           type: Sequelize.ENUM("initiated", "failed", "paid"),

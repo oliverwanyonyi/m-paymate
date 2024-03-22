@@ -24,13 +24,18 @@ module.exports = (sequelize, Sequelize) => {
       },
       user_id: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
         references: {
           model: "users",
           key: "id",
         },
+        onDelete:"CASCADE"
       },
       mpesa_receipt_no:{
+        allowNull:true,
+        type:Sequelize.STRING
+      },
+      mpesa_result_desc:{
         allowNull:true,
         type:Sequelize.STRING
       },
@@ -56,7 +61,8 @@ module.exports = (sequelize, Sequelize) => {
           model: "bills",
           key: "id",
         },
-        allowNull: true,
+        allowNull: false,
+        onDelete:"CASCADE"
       },
       status: {
         type: Sequelize.ENUM("initiated", "failed", "paid"),

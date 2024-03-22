@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Button,  CircularProgress,  TextField, Typography } from '@mui/material';
 import styled from '@emotion/styled';
 import { Link } from 'react-router-dom';
+import logo from './assets/m-paymate.png'
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   height: 100vh;
 `;
@@ -14,8 +14,12 @@ const Container = styled.div`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 370px;
+  width: 400px;
+  margin:0 auto;
+  box-shadow: 0 5px 15px rgba(0,0,0,.15);
+  padding:20px;
+  border-radius:10px;
+
 `;
 
 const Input = styled(TextField)`
@@ -24,8 +28,10 @@ const Input = styled(TextField)`
 `;
 
 const RegisterButton = styled(Button)`
-  margin-top: 16px;
+margin-top: 16px;
+margin-bottom:16px;
 `;
+
 
 const ErrorMessage = styled.div`
   color: red;
@@ -89,10 +95,18 @@ const Register = ({ onRegister,errors,setErrors }) => {
 
   return (
     <Container>
-      <Typography variant="h4" component="h1">
-        Register
-      </Typography>
+      
       <Form onSubmit={handleSubmit}>
+
+      <div className="auth-header">
+        <Typography variant="h4" component="h1">
+       <img src={logo} className="auth-logo" />
+      </Typography>
+
+      <Typography variant="body1" gutterBottom>
+     Create account continue Here
+      </Typography>
+        </div>
         <Input
           label="Name"
           value={formData.name}
@@ -146,7 +160,7 @@ const Register = ({ onRegister,errors,setErrors }) => {
        <RegisterButton variant="contained" color="primary" type="submit" disabled={loading}>
           {loading ? <CircularProgress size={24}/>:"Register"}
         </RegisterButton> 
-      <p>Already have an account <Link to="/login">Login</Link></p>
+        <p className="info">Already have an account <Link to="/login">Login</Link></p>
       </Form>
     </Container>
   );

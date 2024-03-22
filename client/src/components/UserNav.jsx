@@ -2,10 +2,12 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { FaChevronDown, FaCircleUser, FaUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../store/AuthProvider";
+import { AppContext } from "../store/AppProvider";
 
 const UserNav = () => {
   const [isSubnavOpen, setIsSubnavOpen] = useState(false);
   const subnavRef = useRef(null);
+  const {handleNavigate} = useContext(AppContext)
   const { logout, authUser } = useContext(AuthContext);
   const toggleSubnav = () => {
     setIsSubnavOpen(!isSubnavOpen);
@@ -52,9 +54,9 @@ const UserNav = () => {
 
           <div className="nav-sub-items" ref={subnavRef}>
             <div className="link-text">
-              <Link className="text" to="/profile">
+              <div className="text" onClick={()=>handleNavigate('/user/profile')}>
                 Profile
-              </Link>
+              </div>
             </div>
             <div className="link-text">
               <div className="text" onClick={handleLogout}>

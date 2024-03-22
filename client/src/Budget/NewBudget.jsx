@@ -15,12 +15,9 @@ const NewBudget = () => {
     'Utilities (Electricity, Water, Gas)',
     'Transportation (Car Payment, Public Transportation)',
     'Food (Groceries, Dining Out)',
-    'Insurance (Health, Life, Auto)',
     'Debt Payments (Credit Cards, Loans)',
-    'Entertainment (Movies, Streaming Services)',
-    'Healthcare (Doctor Visits, Medications)',
-    'Savings (Emergency Fund, Retirement)',
-    'Miscellaneous (Clothing, Gifts, Hobbies)'
+    'Entertainment (Streaming Services)',
+    'Healthcare ( Medications)',
 ];
 
   const handleAddRow = () => {
@@ -83,7 +80,6 @@ const NewBudget = () => {
                   gap: "16px",
                   alignItems: "center",
                   padding: "8px",
-                  backgroundColor: "#f0f0f0",
                   borderRadius: "4px",
                 }}
               >
@@ -138,10 +134,12 @@ const NewBudget = () => {
               </div>
             ))}
             <div style={{ display: "flex", gap: "16px" }}>
-              <Button variant="outlined" onClick={handleAddRow}>
+              <Button variant="outlined" onClick={handleAddRow}
+              
+              >
                 New Category
               </Button>
-              <Button type="submit" variant="contained" color="primary">
+              <Button type="submit" variant="contained" disabled={!categories?.length} color="primary">
                 Submit
               </Button>
             </div>

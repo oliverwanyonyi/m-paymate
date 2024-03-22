@@ -22,6 +22,7 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
         allowNull: true,
+        onDelete: 'SET NULL'
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -29,7 +30,8 @@ module.exports = (sequelize, Sequelize) => {
           model: "users",
           key: "id",
         },
-        allowNull: true,
+        allowNull: false,
+        onDelete:"CASCADE"
       },
       bill_id:{
         type: Sequelize.INTEGER,
@@ -38,6 +40,11 @@ module.exports = (sequelize, Sequelize) => {
           key: "id",
         },
         allowNull: true,
+        onDelete: 'SET NULL'
+      },
+      mpesa_receipt_no:{
+        allowNull:true,
+        type:Sequelize.STRING
       },
       transaction_date: {
         type: Sequelize.DATE,

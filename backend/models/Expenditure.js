@@ -17,7 +17,7 @@ module.exports = (sequelize,Sequelize) =>{
           },
           category_id:{
             type: Sequelize.INTEGER,
-            allowNull: false,
+            allowNull: true,
             references: {
               model: 'budget_categories',
               key: 'id'
