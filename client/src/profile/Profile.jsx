@@ -16,6 +16,7 @@ const Profile = () => {
     phone: "",
     name: "",
   });
+  
 
   const submitHandler = async (e) => {
     e.preventDefault();

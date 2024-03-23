@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const moment = require("moment/moment");
 const { Budget, BudgetCategory } = require("../models");
 const sequelize = require("sequelize");
+const db = require("../models");
 exports.createBudget = async (req, res, next) => {
   try {
     console.log(req.body);
@@ -174,7 +175,6 @@ exports.deleteBudgetCategory = async (req, res, next) => {
 };
 
 exports.deleteBudget = async (req, res, next) => {
-
   try {
     const budget = await Budget.findOne({
       where: {
@@ -183,12 +183,9 @@ exports.deleteBudget = async (req, res, next) => {
       },
     });
 
-    
-
-
     await budget.destroy();
 
-    res.send('budget removed')
+    res.send("budget removed");
   } catch (error) {
     next(error);
   }
@@ -206,10 +203,127 @@ exports.addBudgetCategory = async (req, res, next) => {
       res.status(404).json("budget not found");
     }
 
-    console.log(req.body);
-    await BudgetCategory.create({...req.body, budget_id:req.params.budgetId});
+    await BudgetCategory.create({
+      ...req.body,
+      budget_id: req.params.budgetId,
+    });
 
     res.send("budget catgory added");
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.dashboardAnalytics = async (req, res, next) => {
+  try {
+    const currentDate = moment().startOf("month");
+    const endDate = moment().endOf("month");
+
+    const budget = await db.Budget.findOne({
+      where: {
+        user_id: req.user.id,
+        start_date: {
+          [sequelize.Op.lte]: endDate,
+        },
+        end_date: {
+          [sequelize.Op.gte]: currentDate,
+        },
+      },
+      // include: [
+      //   {
+      //     model: db.BudgetCategory,
+
+      //     include: [{ model: db.Transaction }],
+      //   },
+      // ],
+      include: [
+        {
+          model: db.BudgetCategory,
+          include: [
+            {
+              model: db.Transaction,
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!budget) {
+      throw new Error("No budget found for the current month.");
+    }
+
+    let totalBudget = 0;
+    // let totalCategories = budget.budget_categories.length;
+    let totalSpent = 0;
+
+    budget.budget_categories.forEach((category) => {
+      totalBudget += category.amount;
+      totalSpent += category.total_amount_spent;
+    });
+
+    const remainingBudget = totalBudget - totalSpent;
+
+    const bills = await db.Bill.findAll({
+      where: {
+        user_id: req.user.id,
+      },
+      include: [
+        {
+          model: db.Transaction,
+          as: "transactions",
+          attributes: ["amount"],
+        },
+      ],
+    });
+
+    let outgoingMoney = 0;
+    bills.forEach((bill) => {
+      let totalPaid = 0;
+      bill.transactions.forEach((transaction) => {
+        totalPaid += transaction.amount;
+      });
+      const balance = bill.amount - totalPaid;
+      if (balance > 0) {
+        outgoingMoney += balance;
+      }
+    });
+
+    const pending_bills = await db.Bill.findAll({
+      where: {
+        user_id: req.user.id,
+      },
+      include: [
+        {
+          model: db.Transaction,
+          as: "transactions",
+        },
+      ],
+    });
+
+    console.log(pending_bills);
+
+    let total_bills_count = bills.length;
+    let pendingBillsCount = 0;
+    pending_bills.forEach((bill) => {
+      let totalPaid = 0;
+      bill.transactions.forEach((transaction) => {
+        totalPaid += transaction.amount;
+      });
+      const balance = bill.amount - totalPaid;
+      if (balance > 0) {
+        pendingBillsCount++;
+      }
+    });
+
+    res.json({
+      totalBudget,
+      total_bills_count,
+      remainingBudget,
+      totalSpent,
+      outgoingMoney,
+      pendingBillsCount,
+      budget_categories:budget.budget_categories
+    });
   } catch (error) {
     next(error);
   }

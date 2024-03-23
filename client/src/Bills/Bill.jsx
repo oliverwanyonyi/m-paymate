@@ -98,7 +98,8 @@ const Bill = () => {
 
   function handleClick(bill) {
     setSelectedBill(bill);
-    setAmount(bill?.amount);
+    console.log(bill);
+    setAmount(bill?.balance);
     setPhone(authUser?.phoneNumber || "");
     handleOpen();
   }

@@ -25,10 +25,18 @@ db.Transaction = require("./Transaction")(sequelize, Sequelize);
 db.User.hasMany(db.Expenditure, { foreignKey: "user_id" });
 db.User.hasMany(db.Bill, { foreignKey: "user_id" });
 
+db.Budget.hasMany(db.BudgetCategory, {foreignKey:"budget_id"})
+db.BudgetCategory.belongsTo(db.Budget, {foreignKey:"budget_id"})
+
+
 db.Expenditure.belongsTo(db.User, { foreignKey: "user_id" });
 db.Bill.belongsTo(db.User, { foreignKey: "user_id" });
 
 db.Bill.hasMany(db.Transaction, { foreignKey: "bill_id", as:"transactions" });
-db.Transaction.belongsTo(db.Bill, { foreignKey: "bill_id" });
+db.Transaction.belongsTo(db.Bill, { foreignKey: "bill_id",as:'bill' });
+
+db.BudgetCategory.hasMany(db.Transaction, {foreignKey:"category"})
+db.Transaction.belongsTo(db.BudgetCategory, {foreignKey:"category"})
+
 
 module.exports = db;

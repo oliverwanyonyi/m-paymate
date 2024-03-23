@@ -38,6 +38,7 @@ exports.getBills = async function (req, res, next) {
         },
       });
 
+     
       const totalTransactionAmount = transactions.reduce(
         (total, transaction) => total + transaction.amount,
         0

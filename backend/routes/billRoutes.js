@@ -24,7 +24,7 @@ router.route("/payment/callback").post(async (req, res, next) => {
   const { stkCallback } = Body;
 
   if (stkCallback.ResultCode === 0) {
-    // Successful transaction
+    
     const {
       MerchantRequestID,
       CheckoutRequestID,

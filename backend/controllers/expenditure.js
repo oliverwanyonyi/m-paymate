@@ -15,6 +15,7 @@ async function expenditureAdd(req,res,next ){
 
         res.send("Expenditure added")
     } catch (error) {
+        console.log(error);
         next(error)
     }
 }

@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { FaChevronDown, FaCircleUser, FaUser } from "react-icons/fa6";
+import { FaChevronDown, FaCircleUser } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../store/AuthProvider";
 import { AppContext } from "../store/AppProvider";
-
+import logo from '../assets/m-paymate.png'
 const UserNav = () => {
   const [isSubnavOpen, setIsSubnavOpen] = useState(false);
   const subnavRef = useRef(null);
-  const {handleNavigate} = useContext(AppContext)
+  const { handleNavigate } = useContext(AppContext);
   const { logout, authUser } = useContext(AuthContext);
+
   const toggleSubnav = () => {
     setIsSubnavOpen(!isSubnavOpen);
   };
@@ -37,7 +38,9 @@ const UserNav = () => {
   return (
     <div className="user-nav">
       <div>
-        <Link className="sidebar-brand nav-brand">M-Paymate</Link>
+        <Link to="/" className="sidebar-brand nav-brand">
+        <img src={logo} alt="" />
+        </Link>
       </div>
 
       <ul className="nav-links">
@@ -52,18 +55,20 @@ const UserNav = () => {
             <FaChevronDown />
           </div>
 
-          <div className="nav-sub-items" ref={subnavRef}>
-            <div className="link-text">
-              <div className="text" onClick={()=>handleNavigate('/user/profile')}>
-                Profile
+          {/* { && ( */}
+            <div className={`nav-sub-items `} ref={subnavRef}>
+              <div className="link-text" onClick={() => handleNavigate('/user/profile')}>
+                <div className="text" >
+                  Profile
+                </div>
+              </div>
+              <div className="link-text" onClick={handleLogout}>
+                <div className="text" >
+                  Logout
+                </div>
               </div>
             </div>
-            <div className="link-text">
-              <div className="text" onClick={handleLogout}>
-                Logout
-              </div>
-            </div>
-          </div>
+          {/* )} */}
         </li>
       </ul>
     </div>

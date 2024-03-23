@@ -10,6 +10,7 @@ const {
   deleteBudgetCategory,
   deleteBudget,
   addBudgetCategory,
+  dashboardAnalytics,
 } = require("../controllers/budgetController");
 
 const router = require("express").Router();
@@ -63,4 +64,6 @@ router
 
   router.route('/:budgetId/category/add').post(protect, categoryValidationRule, addBudgetCategory)
 
+
+  router.route('/account/summary').get(protect, dashboardAnalytics)
 module.exports = router;

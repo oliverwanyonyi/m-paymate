@@ -9,7 +9,6 @@ module.exports = (sequelize,Sequelize) =>{
           name: {
             type: Sequelize.STRING,
             allowNull: false,
-            unique:true
           },
           amount: {
             type: Sequelize.DOUBLE(10, 2), 

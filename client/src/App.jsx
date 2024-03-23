@@ -19,6 +19,7 @@ import NewBudget from "./Budget/NewBudget";
 import BudgetList from "./Budget/BudgetList";
 import EditBudgetCategory from "./Budget/EditBudgetCategory";
 import AddBudgetCategory from "./Budget/AddBudgetCategory";
+import Landing from "../Landing";
 function App() {
   const { setIsAuth, isAuth, setAuthUser, authUser } = useContext(AuthContext);
 
@@ -116,7 +117,7 @@ function App() {
           />
         }
       />
-
+<Route path="/" element={<Landing/>} />
       <Route
         path="/dashboard"
         element={
