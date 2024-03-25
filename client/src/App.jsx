@@ -12,20 +12,26 @@ import ExpenditureList from "./Expenditure/ExpenditureList";
 import ExpenditureAdd from "./Expenditure/ExpenditureAdd";
 import { useSnackbar } from "notistack";
 import AddBill from "./Bills/AddBill";
-import { LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import OCRComponent from "./TessaractTest";
 import NewBudget from "./Budget/NewBudget";
 import BudgetList from "./Budget/BudgetList";
 import EditBudgetCategory from "./Budget/EditBudgetCategory";
 import AddBudgetCategory from "./Budget/AddBudgetCategory";
-import Landing from "../Landing";
+import Landing from "./Landing";
+import AddTestimonial from "./Testimonial/AddTestimonial";
+import AdminDashboard from "./Admin/AdminDashboard";
+import UserList from "./Admin/UserList";
+import Testimonials from "./Admin/Testimonials";
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
   const { setIsAuth, isAuth, setAuthUser, authUser } = useContext(AuthContext);
 
   const { enqueueSnackbar } = useSnackbar();
   const [errors, setErrors] = useState();
   const navigate = useNavigate();
+
   const handleLogin = async (email, password) => {
     try {
       const response = await axiosInstance.post("/login", {
@@ -36,7 +42,12 @@ function App() {
         setIsAuth(true);
         setAuthUser(response.data.user);
         localStorage.setItem("auth_user", JSON.stringify(response.data.user));
-        navigate("/dashboard");
+        const role = response.data.user.role
+        if (role === 'admin') {
+          navigate('/admin/dashboard');
+        } else if (role === 'user') {
+          navigate('/dashboard');
+        } 
         enqueueSnackbar("Login Successful", {
           variant: "success",
           anchorOrigin: { horizontal: "center", vertical: "top" },
@@ -117,7 +128,10 @@ function App() {
           />
         }
       />
-<Route path="/" element={<Landing/>} />
+      <Route path="/" element={<Landing />} />
+
+      {/* user routes */}
+      <Route  element={<ProtectedRoute  allowedRoles={["user"]}/>} >
       <Route
         path="/dashboard"
         element={
@@ -131,14 +145,13 @@ function App() {
         }
       />
 
-      <Route 
-      path="/expenditure/:expeId/edit"
-
-      element={
-        <Layout>
-          <ExpenditureAdd />
-        </Layout>
-      }
+      <Route
+        path="/expenditure/:expeId/edit"
+        element={
+          <Layout>
+            <ExpenditureAdd />
+          </Layout>
+        }
       />
 
       <Route
@@ -164,7 +177,7 @@ function App() {
         element={
           <Layout>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <AddBill />
+              <AddBill />
             </LocalizationProvider>
           </Layout>
         }
@@ -183,7 +196,7 @@ function App() {
         }
       />
 
-<Route
+      <Route
         path="/budget/list"
         element={
           isAuth ? (
@@ -208,7 +221,7 @@ function App() {
         }
       />
 
-<Route
+      <Route
         path="/budget/category/:cateId/edit"
         element={
           isAuth ? (
@@ -221,8 +234,24 @@ function App() {
         }
       />
 
-      <Route path="/budget/:budgetId/category/add"  element={<Layout><AddBudgetCategory/> </Layout>} />
+      <Route
+        path="/budget/:budgetId/category/add"
+        element={
+          <Layout>
+            <AddBudgetCategory />{" "}
+          </Layout>
+        }
+      />
 
+<Route
+        path="/testimonial/add"
+        element={
+          <Layout>
+            <AddTestimonial />
+          </Layout>
+        }
+      />
+</Route>
       <Route
         path="/profile"
         element={
@@ -236,8 +265,49 @@ function App() {
         }
       />
 
-<Route path='/user/profile'  element={<Layout><Profile/></Layout>} />
-      <Route path='/test' element={<OCRComponent/>}/>
+      <Route
+        path="/user/profile"
+        element={
+          <Layout>
+            <Profile />
+          </Layout>
+        }
+      />
+      <Route path="/test" element={<OCRComponent />} />
+
+
+      {/* admin routes */}
+      <Route  element={<ProtectedRoute  allowedRoles={["admin"]}/>} >
+          {/* <Route path="/" element={<UserDashboard />} /> */}
+
+      <Route
+        path="/admin/dashboard"
+        element={
+          <Layout>
+            <AdminDashboard />
+          </Layout>
+        }
+      />
+      <Route
+        path="/admin/users"
+        element={
+          <Layout>
+            <UserList />
+          </Layout>
+        }
+      />
+      <Route
+        path="/admin/testimonials"
+        element={
+          <Layout>
+            <Testimonials />
+          </Layout>
+        }
+      />
+        </Route>
+
+        <Route path="/unauthorized" element={<h1 className="message-box">Your are not allowed to visit that page</h1>}/>
+
     </Routes>
   );
 }

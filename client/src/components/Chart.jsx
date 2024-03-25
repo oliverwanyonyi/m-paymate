@@ -29,13 +29,13 @@ const Chart = ({
             borderWidth: 1,
             data: totalAmountsSpent,
           },
-          {
-            label: 'Transaction Amount',
-            backgroundColor: 'rgba(75, 192, 192, 0.5)',
-            borderColor: 'rgba(75, 192, 192, 1)',
-            borderWidth: 1,
-            data: transactionAmounts,
-          },
+          // {
+          //   label: 'Transaction Amount',
+          //   backgroundColor: 'rgba(75, 192, 192, 0.5)',
+          //   borderColor: 'rgba(75, 192, 192, 1)',
+          //   borderWidth: 1,
+          //   data: transactionAmounts,
+          // },
         ],
       };
     

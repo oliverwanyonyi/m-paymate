@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const expenditureRoutes = require("./routes/expenditureRoutes");
 const billRoutes = require("./routes/billRoutes");
 const budgetRoutes = require('./routes/budgetRoutes')
+const testimonialRoutes = require('./routes/testimonialRoute')
 app.use(
   cors({
     origin: ["http://localhost:5173"],
@@ -21,6 +22,7 @@ app.use("/api", authRoutes);
 app.use("/api/expenditure", expenditureRoutes);
 app.use("/api/bills", billRoutes);
 app.use("/api/budget", budgetRoutes);
+app.use("/api/testimonials", testimonialRoutes);
 
 
 // Middleware to handle not found routes (404)

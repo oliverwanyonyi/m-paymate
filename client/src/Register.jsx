@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button,  CircularProgress,  TextField, Typography } from '@mui/material';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from './assets/m-paymate.png'
+import { AuthContext } from './store/AuthProvider';
 
 const Container = styled.div`
   display: flex;
@@ -71,6 +72,9 @@ const validateUsername = (username) => {
 
 const Register = ({ onRegister,errors,setErrors }) => {
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
    const [loading,setLoading] = useState(false)
   const [formData,setFormData] = useState({
     name:'',
@@ -80,6 +84,9 @@ const Register = ({ onRegister,errors,setErrors }) => {
     password:''
   })
   
+
+
+  const {authUser} = useContext(AuthContext)
   const handleSubmit = (event) => {
    setLoading(true)
     setErrors()
@@ -92,6 +99,29 @@ const Register = ({ onRegister,errors,setErrors }) => {
   function changeHandler(value,name){
     setFormData({...formData, [name]:value})
   }
+
+
+
+  useEffect(() => {
+    const handleRedirect = () => {
+      if (authUser) {
+        const role = authUser?.role
+
+        if (role === 'admin') {
+          const from = location.state?.from?.pathname || '/admin/dashboard';
+          navigate(from, { replace: true });
+        } else if (role === 'user') {
+          const from = location.state?.from?.pathname || '/dashboard';
+          navigate(from, { replace: true });
+        } else {
+         
+          console.error('Unknown user role');
+        }
+      }
+    };
+
+    handleRedirect();
+  }, [authUser]);
 
   return (
     <Container>

@@ -21,22 +21,20 @@ db.Budget = require("./Budget")(sequelize, Sequelize);
 db.BudgetCategory = require("./BudgetCategory")(sequelize, Sequelize);
 db.MpesaRequest = require("./MpesaRequest")(sequelize, Sequelize);
 db.Transaction = require("./Transaction")(sequelize, Sequelize);
-
+db.Testimonial = require("./Testimonial")(sequelize, Sequelize);
 db.User.hasMany(db.Expenditure, { foreignKey: "user_id" });
 db.User.hasMany(db.Bill, { foreignKey: "user_id" });
 
-db.Budget.hasMany(db.BudgetCategory, {foreignKey:"budget_id"})
-db.BudgetCategory.belongsTo(db.Budget, {foreignKey:"budget_id"})
-
+db.Budget.hasMany(db.BudgetCategory, { foreignKey: "budget_id" });
+db.BudgetCategory.belongsTo(db.Budget, { foreignKey: "budget_id" });
 
 db.Expenditure.belongsTo(db.User, { foreignKey: "user_id" });
 db.Bill.belongsTo(db.User, { foreignKey: "user_id" });
 
-db.Bill.hasMany(db.Transaction, { foreignKey: "bill_id", as:"transactions" });
-db.Transaction.belongsTo(db.Bill, { foreignKey: "bill_id",as:'bill' });
+db.Bill.hasMany(db.Transaction, { foreignKey: "bill_id", as: "transactions" });
+db.Transaction.belongsTo(db.Bill, { foreignKey: "bill_id", as: "bill" });
 
-db.BudgetCategory.hasMany(db.Transaction, {foreignKey:"category"})
-db.Transaction.belongsTo(db.BudgetCategory, {foreignKey:"category"})
-
+db.BudgetCategory.hasMany(db.Transaction, { foreignKey: "category" });
+db.Transaction.belongsTo(db.BudgetCategory, { foreignKey: "category" });
 
 module.exports = db;

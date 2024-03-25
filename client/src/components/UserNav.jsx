@@ -62,6 +62,13 @@ const UserNav = () => {
                   Profile
                 </div>
               </div>
+
+             {authUser?.role === "user" && <div className="link-text" onClick={() => handleNavigate('/testimonial/add')}>
+                <div className="text" >
+                Review M-paymate
+                </div>
+              </div>}
+
               <div className="link-text" onClick={handleLogout}>
                 <div className="text" >
                   Logout

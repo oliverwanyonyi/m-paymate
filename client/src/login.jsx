@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Avatar, Button, CircularProgress, Snackbar, TextField, Typography } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link,useLocation,useNavigate } from "react-router-dom";
 import styled from "@emotion/styled";
 import logo from './assets/m-paymate.png'
+import { AuthContext } from "./store/AuthProvider";
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -38,7 +39,9 @@ const Login = ({ onLogin,errors }) => {
     password: "",
   });
   const [loading,setLoading] = useState(false)
+  const {authUser} = useContext(AuthContext)
   const handleSubmit = (event) => {
+
   
       setLoading(true)
       event.preventDefault();
@@ -51,6 +54,32 @@ const Login = ({ onLogin,errors }) => {
   function changeHandler(value, name) {
     setFormData({ ...formData, [name]: value });
   }
+
+
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    const handleRedirect = () => {
+      if (authUser) {
+        const role = authUser?.role
+
+        if (role === 'admin') {
+          const from = location.state?.from?.pathname || '/admin/dashboard';
+          navigate(from, { replace: true });
+        } else if (role === 'user') {
+          const from = location.state?.from?.pathname || '/dashboard';
+          navigate(from, { replace: true });
+        } else {
+         
+          console.error('Unknown user role');
+        }
+      }
+    };
+
+    handleRedirect();
+  }, [authUser]);
 
   return (
     <Container>
@@ -80,8 +109,7 @@ const Login = ({ onLogin,errors }) => {
           helperText={errors?.email}
           placeholder="Email Or Username"
         />
-
-        
+      
        
         <Input
           label="Password"
